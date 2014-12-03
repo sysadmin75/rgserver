@@ -1,0 +1,37 @@
+$var title: Testing kit
+<div class="prose">
+    <div class="clearfix">
+        <h1 class="left no-margin">Testing kit</h1>
+        <h3 class="right no-margin"><a href="/api">Back to the table of contents</a></h3>
+    </div>
+    <hr/>
+    <p>
+        To test your robots beforehand, please download the latest rgkit
+        from pip, or use the link on the <a href="/stats">Stats</a> page (which
+        is also the version of rgkit that the server uses).
+        The <code>rg</code> module is part of that kit.
+    </p>
+    <p>
+      <a href="https://github.com/RobotGame/rgkit">https://github.com/RobotGame/rgkit</a>
+      is the latest version of the open source development kit with much more detailed information.
+    </p>
+    <p><b>Python version:</b> CPython 2.7.8</p>
+    <p>You can use <code>pip install -U rgkit</code> and run:
+    <pre>rgrun yourcode.py yourothercode.py</pre>
+    <p>Or you can gunzip and untar it wherever you want and run:</p>
+    <pre>python rgkit/rgkit/run.py yourcode.py yourothercode.py</pre>
+    <p>
+        and it will launch a game between <code>yourcode.py</code> and <code>yourothercode.py</code>.
+        If you've only written one AI, you can just run it against itself.
+    </p>
+    <p><code>run.py</code> also takes optional parameters. Common ones are:</p>
+    <ul>
+        <li><code>-H, --headless</code>: runs without the UI (e.g. for A/B testing, etc.).</li>
+        <li><code>-c, --count &lt;number&gt;</code>: specifies a number of games to run concurrently.</li>
+    </ul>
+    <hr/>
+    <div class="clearfix">
+        <h3 class="left">Back: <a href="/moreexamples">More examples</a></h3>
+        <h3 class="right">Next: <a href="/security">Security</a></h3>
+    </div>
+</div>

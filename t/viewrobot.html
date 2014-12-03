@@ -1,0 +1,183 @@
+$def with (robot, matches, next_matches, latest_id, challenges)
+$var title: Viewing robot $robot.name
+<div class="clearfix">
+    <div class="left">
+        <h1 class="no-margin">
+          $if tplib.timedelta_ago(robot.last_updated).days < 3:
+            $ color_class = 'fresh'
+          $elif robot.automatch:
+            $ color_class = 'automatch'
+          $else:
+            $ color_class = ''
+          <a class="name $color_class" href="/robot/$robot.id">
+            $robot.name
+          </a>
+          $if robot.fast:
+            <i class="fa fa-tachometer trophy-fast" rel="tooltip" title="Fast bot trophy."></i>
+          $if robot.short:
+            <i class="fa fa-suitcase trophy-short" rel="tooltip" title="Short bot trophy."></i>
+          $if robot.open_source:
+            <i class="fa fa-github faded" rel="tooltip" title="Open-source."></i>
+        </h1>
+        <div class="faded">
+            <div>Elo rating: $:tplib.drating(robot, decimal=True)</div>
+            <div>
+                $if robot.deleted:
+                    This robot has been deleted.
+                $elif robot.disabled:
+                    This robot has been disabled.
+                $elif robot.rating is not None:
+                    Current ranking: $(robot.ranking + 1)
+            </div>
+            <div class="small">
+              Last updated $tplib.time_ago(robot.last_updated).
+              Code length $robot.len characters.
+              <abbr rel="tooltip" title="Average time per ranked match.">
+                Average time</abbr>
+              $tplib.rounded(robot.time, 2)s.
+              $if tplib.is_mod(sess):
+              <br/>
+              Mod only:
+                <abbr rel="tooltip" title="Increases every round the bot is not matched and resets when matched.">
+                  Matchmaking probability</abbr>
+                $tplib.rounded(robot.priority, 3).
+                <abbr rel="tooltip" title="Approximate rolling win rate.">
+                  Win rate</abbr>
+                $tplib.rounded(robot.winrate, 3).
+            </div>
+        </div>
+        <div>
+          $if not robot.deleted:
+            $if 'logged_in' in sess and sess.user_id == robot.user_id or tplib.is_admin(sess):
+              <a class="nou" href="/robot/$robot.id/edit"><i class="fa fa-pencil"></i> Edit</a> <span class="faded">&middot;</span>
+            $if robot.open_source or ('logged_in' in sess and sess.user_id == robot.user_id) or tplib.is_admin(sess):
+              <a class="nou" href="/robot/$robot.id/source"><i class="fa fa-code"></i> View source</a>
+            $if tplib.is_admin(sess):
+              <span class="faded">&middot;</span>
+              $if not robot.disabled:
+                <a class="nou" href="/robot/$robot.id/disable"><i class="fa nom fa-minus-circle"></i> Disable</a>
+              $else:
+                <a class="nou" href="/robot/$robot.id/enable"><i class="fa nom fa-plus-circle"></i> Enable</a>
+              $if not robot.deleted:
+                <span class="faded">&middot;</span>
+                <a class="nou" href="/robot/$robot.id/delete"><i class="fa nom fa-trash-o"></i> Delete</a>
+              <span class="faded">&middot;</span>
+              <a class="nou" href="/robot/$robot.id/test"> Test</a>
+        </div>
+    </div>
+    <div class="right">
+        $if not robot.deleted:
+            $if 'logged_in' in sess and sess.logged_in:
+                $if robot.user_id != sess.user_id:
+                    $if challenges:
+                        <a class="button" href="/robot/$robot.id/challenge">
+                            Challenge
+                        </a>
+                        <span class="faded">($challenges left today)</span>
+                    $else:
+                        You have <a href="/profile/edit"><b>no more challenges</b></a> today!<br />
+            $else:
+                Challenge this robot! <a class="button" href="/reg">Make your first robot</a>.
+    </div>
+</div>
+<hr/>
+<div class="clearfix robot-info">
+  <h2><a href='/user/$robot.user_id'>About this programmer</a></h2>
+  <div class="about">
+      $if robot.about:
+          <div class="text">$robot.about</div>
+      $else:
+          <div class="text"></div>
+  </div>
+  <div class="history">
+    $if next_matches:
+      <h2>Upcoming Matches</h2>
+      <div class="matches">
+        $for match in next_matches:
+          <div class="match-item info normal">
+            <a href="/match/$match.id"
+               class="faded"
+               rel="tooltip"
+               title="Approx. matches in queue before this one.">
+                $if match.ranked:
+                    (~$(max(1, match.id - latest_id)))
+                $else:
+                    (~)
+            </a>
+            <span class="faded">vs.</span>
+            <a class="name inherit-color" href="/robot/$(match.r2_id if match.r1_id == robot.id else match.r1_id)">
+                $(match.r2_name if match.r1_id == robot.id else match.r1_name)
+            </a>
+            <span class="faded">
+                $if match.ranked:
+                    ($tplib.match_rating(match, robot.id, other=True))
+            </span>
+            <div>
+                $if not match.ranked:
+                    <i class="defcursor faded fa fa-asterisk" rel="tooltip" title="Unranked."></i>
+            </div>
+          </div>
+      </div>
+  </div>
+  <h2><a href='/robot/$robot.id/history'>Match history</a></h2>
+  <div class="history">
+    $if matches:
+      <div class="matches fill">
+          $for match in matches:
+            <div class="match-item info $('normal' if match.winner == 0 else 'success' if match.winner == robot.id else 'fail')">
+                <a href="/match/$match.id" class="faded timestamp">
+                    $tplib.time_ago(match.timestamp)
+                </a>
+                <span class="rating faded">
+                    $if match.ranked:
+                        ($tplib.match_rating(match, robot.id))
+                </span>
+                <div class="result">
+                    <a class="inherit-color" href="/match/$match.id">
+                      $if match.winner == 0:
+                        <i class="fa fa-fw fa-ellipsis-h"></i>
+                      $elif match.winner == robot.id:
+                        <i class="fa fa-fw fa-check"></i>
+                      $elif match.winner is not None:
+                        <i class="fa fa-fw fa-times"></i>
+                      $else:
+                        <i class="fa fa-fw fa-exclaimation" rel="tooltip" title="Error."></i>
+                    </a>
+                </div>
+                <div class="score">
+                    <a class="inherit-color" href="/match/$match.id">
+                        $if match.r1_score is not None and match.r2_score is not None:
+                                $('{0} : {1}'.format(*((match.r1_score, match.r2_score) if match.r1_id == robot.id else (match.r2_score, match.r1_score))))
+                    </a>
+                </div >
+                <a class="faded" href="/robot/$robot.id/against/$(match.r2_id if match.r1_id == robot.id else match.r1_id)">
+                  vs.
+                </a>
+                <a class="name inherit-color" href="/robot/$(match.r2_id if match.r1_id == robot.id else match.r1_id)">
+                    $(match.r2_name if match.r1_id == robot.id else match.r1_name)
+                </a>
+                <span class="faded rating">
+                    $if match.ranked:
+                        ($tplib.match_rating(match, robot.id, other=True))
+                </span>
+                <span class="change">
+                    $if match.ranked:
+                        $ change = tplib.rating_change(match, robot.id)
+                        $if change > 0:
+                            (+$change)
+                        $elif change < 0:
+                            ($change)
+                        $else:
+                            (~)
+                </span>
+                <div>
+                    $if not match.ranked:
+                        <i class="defcursor faded fa fa-asterisk" rel="tooltip" title="Unranked."></i>
+                </div>
+            </div>
+      </div>
+    $else:
+      <p>No matches.</p>
+  </div>
+  <h2><a href='/robot/$robot.id/charts'>Rating and ranking charts</a></h2>
+</div>

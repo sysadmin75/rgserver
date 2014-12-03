@@ -1,0 +1,72 @@
+$def with (recent, next_matches)
+<div class="clearfix">
+  <h1>Upcoming Matches</h1>
+  $if next_matches:
+    <div class="matches fill">
+      $for rmatch in next_matches:
+        <div class="match-item info">
+          <span class="faded rating">
+            $if rmatch.ranked:
+              ($tplib.match_rating(rmatch, rmatch.r1_id))
+          </span>
+          <a class="name $('normal' if rmatch.winner == 0 else 'success' if rmatch.winner == rmatch.r1_id else 'fail')"
+            href="/robot/$rmatch.r1_id">
+            $rmatch.r1_name
+          </a>
+          <strong class="score">
+            <a class="inherit-color" href="/match/$rmatch.id">
+              $if rmatch.r1_score is not None and rmatch.r2_score is not None:
+              $:('{0}-{1}'.format(*(rmatch.r1_score, rmatch.r2_score)))
+            </a>
+          </strong>
+          <a class="name $('normal' if rmatch.winner == 0 else 'success' if rmatch.winner == rmatch.r2_id else 'fail')"
+            href="/robot/$rmatch.r2_id">
+            $rmatch.r2_name
+          </a>
+          <span class="faded rating">
+            $if rmatch.ranked:
+              ($tplib.match_rating(rmatch, rmatch.r2_id))
+          </span>
+          <div class="last">
+            $if not rmatch.ranked:
+              <i class="defcursor faded fa fa-asterisk" rel="tooltip" title="This match was unranked."></i>
+          </div>
+        </div>
+    </div>
+  <h1>Recent Matches</h1>
+  $if recent:
+    <div class="matches fill">
+      $for rmatch in recent:
+        <div class="match-item info">
+          <a href="/match/$rmatch.id" class="faded timestamp">
+            $tplib.time_ago(rmatch.timestamp)
+          </a>
+          <span class="faded rating">
+            $if rmatch.ranked:
+              ($tplib.match_rating(rmatch, rmatch.r1_id))
+          </span>
+          <a class="name $('normal' if rmatch.winner == 0 else 'success' if rmatch.winner == rmatch.r1_id else 'fail')"
+            href="/robot/$rmatch.r1_id">
+            $rmatch.r1_name
+          </a>
+          <strong class="score">
+            <a class="inherit-color" href="/match/$rmatch.id">
+              $if rmatch.r1_score is not None and rmatch.r2_score is not None:
+              $:('{0}-{1}'.format(*(rmatch.r1_score, rmatch.r2_score)))
+            </a>
+          </strong>
+          <a class="name $('normal' if rmatch.winner == 0 else 'success' if rmatch.winner == rmatch.r2_id else 'fail')"
+            href="/robot/$rmatch.r2_id">
+            $rmatch.r2_name
+          </a>
+          <span class="faded rating">
+            $if rmatch.ranked:
+              ($tplib.match_rating(rmatch, rmatch.r2_id))
+          </span>
+          <div>
+            $if not rmatch.ranked:
+              <i class="defcursor faded fa fa-asterisk" rel="tooltip" title="This match was unranked."></i>
+          </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,86 @@
+$def with (content)
+<!DOCTYPE>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1">
+    $if 'title' in content:
+        <title>$content.title | Robot Game</title>
+    $else:
+        <title>Robot Game</title>
+    <link rel="stylesheet" href="/static/main-v5.css"/>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-12588142-5', {
+        'cookieDomain': 'robotgame.net',
+        'siteSpeedSampleRate': 100
+      });
+      ga('require', 'displayfeatures');
+      ga('require', 'linkid', 'linkid.js');
+      ga('send', 'pageview');
+    </script>
+  </head>
+  <body>
+      <div id="container">
+        $if 'logged_in' in sess and sess.logged_in and (sess.user_id in [8681, 8691, 8695, 8761, 8762, 8987, 9080, 9212, 9418]):
+          <div class="notice">
+            Please respect the work of other programmers. Do not abuse the system. You can do better than copy/paste.
+          </div>
+        $if 'logged_in' in sess and sess.logged_in and sess.user_id:
+          <!--<div class="notice">
+            A temporary per-user pvChat has been added to the bottom of each user's <a href="/user/$sess.user_id">profile</a>.<br />
+            It will be removed when a better chat system is available.
+          </div>-->
+        <!--<div class="notice">
+          Robot Game will be down for a server move tomorrow, Monday June 16th starting approximately
+          7:30AM (EST) for 4-6 hours.
+        </div>-->
+        <div class="nav large clearfix">
+          <div class="left">
+            <a href="/home"><i class="fa fa-fw fa-home"></i><u id="key-home">H</u>ome</a>
+            <a href="/directory"><i class="fa fa-fw fa-trophy"></i><u id="key-w">W</u>arehouse</a>
+            <a href="/api"><i class="fa fa-fw fa-book"></i><u id="key-r">R</u>ules</a>
+            $if 'logged_in' in sess and sess.logged_in:
+              <a href="/robots"><i class="fa fa-fw fa-wrench"></i>My&nbsp;<u id="key-b">B</u>ots</a>
+          </div>
+          <div class="right">
+            $if 'logged_in' in sess and sess.logged_in:
+              <a href="/user/$sess.user_id"><i class="fa fa-fw fa-user"></i><u id="key-p">P</u>rofile</a>
+              <a href="/logout"><i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            $else:
+              <a href="/reg"><i class="fa fa-fw fa-leaf"></i>Register</a>
+              <a href="/login"><i class="fa fa-fw fa-sign-in"></i><u id="key-l">L</u>ogin</a>
+          </div>
+        </div>
+        <div class="header faded">
+          <a href="https://plus.google.com/communities/118117754881924895861/stream/6b902c87-03f4-4c5e-a9aa-ec6399c2f27c">General&nbsp;Discussions</a> &middot;
+          <a href="https://plus.google.com/communities/118117754881924895861/stream/86494a77-9cc7-4a3f-9326-d091b6136eac">Strategy</a> &middot;
+          <a href="https://plus.google.com/communities/118117754881924895861/stream/8899076a-a6a4-4ea8-9ce9-92d6c01e2196">Requests</a> &middot;
+          <a href="https://plus.google.com/communities/118117754881924895861/stream/f5c3b7e3-300e-4dfb-8cec-d45276cd5e57">Bug&nbsp;Reports</a>
+        </div>
+        <div class="content clearfix">
+          $:content
+        </div>
+        <div class="footer">
+          <div class="left">
+            <span>&copy;&nbsp;2013-2014&nbsp;<a href="https://whitehalmos.org">Peter&nbsp;Wen</a></span>.
+          </div>
+          <div class="right">
+            <span>#robotgame&nbsp;on&nbsp;irc.freenode.net</span> &middot;
+            <a href="/credits">About</a> &middot;
+            <a href="/stats">Stats</a>
+          </div>
+        </div>
+      </div>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <!--[if lte IE 8]><script src="/static/flot/excanvas.min.js"></script><![endif]-->
+  <script src="/static/main-v2.js"></script>
+  <script src="/static/replay-v6.js"></script>
+  $if 'javascript' in content:
+    $:content.javascript
+  </body>
+</html>

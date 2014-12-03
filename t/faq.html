@@ -1,0 +1,18 @@
+$var title: FAQ
+<h1>FAQ</h1>
+
+<h2>What version of Python is the server using?</h2>
+<p>CPython 2.7.3.</p>
+
+<h2>What modules are available?</h2>
+<p>The entire Python standard library.</p>
+
+<h2>How do you make users don't destroy your server?</h2>
+<p>Each robot's code is run:</p>
+<ul>
+    <li>in a separate process</li>
+    <li>in a chroot jail</li>
+    <li>as user "nobody"</li>
+    <li>firewalled by iptables</li>
+    <li>restricted by ulimit from forking or using too much memory</li>
+</ul>

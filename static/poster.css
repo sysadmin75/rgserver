@@ -1,0 +1,43 @@
+body {
+  margin: 0; }
+
+.faded {
+  color: #888888; }
+
+.poster {
+  background-color: white;
+  width: 1100px;
+  font: normal 250% "helvetica neue", helvetica, arial;
+  position: relative; }
+  .poster a {
+    text-decoration: none;
+    color: maroon; }
+  .poster pre {
+    font-size: 50% !important;
+    line-height: 1.2em; }
+  .poster hr {
+    border-style: none;
+    border-bottom: solid 1px #aaaaaa;
+    margin: 1em 0; }
+  .poster p {
+    margin: 0 0 1.5em 0; }
+  .poster .logo {
+    font-size: 140%; }
+    .poster .logo .big {
+      font-size: 120%; }
+  .poster .headline {
+    color: maroon;
+    font-size: 250%;
+    font-weight: bold;
+    line-height: 1.15em; }
+  .poster .message {
+    margin-top: 1.5em;
+    font: 300 160% "helvetica neue";
+    line-height: 1.4em; }
+    .poster .message b {
+      font-weight: 800; }
+    .poster .message strong {
+      font-weight: 500; }
+    .poster .message i {
+      font-weight: 500;
+      font-style: normal; }

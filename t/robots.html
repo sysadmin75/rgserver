@@ -1,0 +1,92 @@
+$def with (robots, disabled_robots)
+$var title: Robots
+
+<div class="right">
+  <form method="get" action="/robot/new">
+    <button><i class="fa fa-plus"></i> New robot</button>
+  </form>
+</div>
+<h1>Robots</h1>
+
+$if len(robots) == 0:
+  <p>
+    Looks like you don't have any active robots. You can make a new one to get started.
+  </p>
+
+$if robots:
+  <hr/>
+$for robot in robots:
+    <p>
+        <div class="large">
+            <a href="/robot/$robot.id">$robot.name</a>
+            $if robot.fast:
+              <i class="fa fa-tachometer trophy-fast" rel="tooltip" title="Fast bot trophy."></i>
+            $if robot.short:
+              <i class="fa fa-suitcase trophy-short" rel="tooltip" title="Short bot trophy."></i>
+            $if robot.open_source:
+              <i class="fa fa-github faded" rel="tooltip" title="This robot is open-source!"></i>
+        </div>
+        <div class="faded">
+            Elo rating: $:tplib.drating(robot)<br/>
+            $if robot.passed and robot.compiled:
+                $if robot.rating is not None:
+                  Rank: $(robot.ranking + 1)
+                $else:
+                  Rank: New
+            $elif not robot.compiled:
+              <b class="error">Robot has not been successfully compiled.</b>
+            $elif not robot.passed:
+              <b class="error">
+                  Errors present, please check your match history, fix the
+                  errors and resubmit your bot.
+              </b>
+              <br/>
+              Refer to <b><a href="/security">Security</a></b> for requirements.
+            <br/>
+        </div>
+        <a class="nou" href="/robot/$robot.id/edit">
+            <i class="fa nom fa-pencil"></i> edit
+        </a> &middot;
+        <a class="nou" rel="tooltip" title="Disable automatic ranked match queuing." href="/robot/$robot.id/disable">
+            <i class="fa nom fa-minus-circle"></i> disable-automatch
+        </a> &middot;
+        <a class="nou" href="/robot/$robot.id/delete">
+            <i class="fa nom fa-trash-o"></i> delete
+        </a>
+    </p>
+
+$if disabled_robots:
+  <hr />
+$for robot in disabled_robots:
+  <p>
+    <span class="faded">
+      $:tplib.drating(robot)
+    </span>
+    <a href="/robot/$robot.id">
+      $robot.name
+    </a> &middot;
+    <a class="nou" href="/robot/$robot.id/edit">
+      <i class="fa nom fa-pencil"></i> edit
+    </a> &middot;
+    <a class="nou" rel="tooltip" title="Enable automatic ranked match queuing."  href="/robot/$robot.id/enable">
+      <i class="fa nom fa-plus-circle"></i> enable-automatch
+    </a> &middot;
+    <a class="nou" href="/robot/$robot.id/delete">
+      <i class="fa nom fa-trash-o"></i> delete
+    </a>
+  </p>
+
+<hr />
+
+<p class="faded">
+    If you're ready to test your robots, go challenge some robots in the
+    <a href="/directory"><strong>warehouse</strong></a>.
+</p>
+
+<hr />
+
+<p class="faded">
+  Join us in our
+  <strong><a href="https://plus.google.com/communities/118117754881924895861">Community</a></strong>
+  to show off your bot, ask questions, discuss strategies, and share programming techniques.
+</p>

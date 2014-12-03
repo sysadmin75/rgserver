@@ -1,0 +1,81 @@
+$var title: Library documentation
+<div class="prose">
+    <div class="clearfix">
+        <h1 class="left no-margin">Library documentation</h1>
+        <h3 class="right no-margin"><a href="/api">Back to the table of contents</a></h3>
+    </div>
+    <hr/>
+
+    <p>Robot Game comes with a library to make your life easier. It's packaged inside the <code>rg</code> module which you can import like any other, by writing <code>import rg</code> at the top of your file. Things to note:</p>
+    <ul>
+        <li>Locations are represented by tuples of the form <code>(x, y)</code>.</li>
+    </ul>
+    <hr/>
+    <h2><em>method</em> <code>rg.dist(loc1, loc2)</code></h2>
+    <p>Returns the mathematical distance between two locations.</p>
+    <hr/>
+    <h2><em>method</em> <code>rg.wdist(loc1, loc2)</code></h2>
+    <p>Returns the walking difference between two locations. Since robots can't move diagonally, this is <code>dx + dy</code>.</p>
+    <hr/>
+    <h2><em>method</em> <code>rg.loc_types(loc)</code></h2>
+    <p>Returns a list of the types of locations that <code>loc</code> is. Possible values are:</p>
+    <ul>
+        <li><code>invalid</code> &mdash; out of bounds (e.g. (-1, -5) or (23, 66))</li>
+        <li><code>normal</code> &mdash; on the grid</li>
+        <li><code>spawn</code> &mdash; spawn point</li>
+        <li><code>obstacle</code> &mdash; somewhere you can't walk (all the gray squares)</li>
+    </ul>
+    <p>This method has no contextual information about the game&mdash;<code>obstacle</code>, for example, doesn't know if there's an enemy robot standing on a square, for example. All it knows is whether a square is a map obstacle.</p>
+    <p>The returned list may contain a combination of these, like</p>
+    <pre>['normal', 'obstacle']</pre>
+    <hr/>
+    <h2><em>method</em> <code>rg.locs_around(loc[, filter_out=None)</code></h2>
+    <p>Returns a list of adjacent locations to <code>loc</code>. You can supply a list of location types to filter out as <code>filter_out</code>. For example,</p>
+    <pre>rg.locs_around(self.location, filter_out=('invalid', 'obstacle'))</pre>
+    <p>would give you a list of all locations you can move into.</p>
+    <hr/>
+    <h2><em>method</em> <code>rg.toward(current_loc, dest_loc)</code></h2>
+    <p>Returns the next point on the way from <code>current_loc</code> to <code>dest_loc</code>. For example, the following code</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">rg</span>
+
+<span class="k">class</span> <span class="nc">Robot</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="n">rg</span><span class="o">.</span><span class="n">CENTER_POINT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s">'suicide'</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s">'move'</span><span class="p">,</span> <span class="n">rg</span><span class="o">.</span><span class="n">toward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="n">rg</span><span class="o">.</span><span class="n">CENTER_POINT</span><span class="p">)]</span>
+</pre></div>
+    <p>would make your robot move to the center, then commit suicide.</p>
+    <hr/>
+    <h2><em>constant</em> <code>rg.CENTER_POINT</code></h2>
+    <p>The location of the center of the board.</p>
+    <hr/>
+    <h2><em>AttrDict</em> <code>rg.settings</code></h2>
+    <p>A special type of dict that can be accessed via attributes that holds game settings.
+    <ul>
+        <li><code>rg.settings.spawn_every</code><br/>how many turns pass between robots being spawned</li>
+        <br/>
+        <li><code>rg.settings.spawn_per_player</code><br/>how many robots are spawned per player</li>
+        <br/>
+        <li><code>rg.settings.robot_hp</code><br/>default robot HP</li>
+        <br/>
+        <li><code>rg.settings.attack_range</code><br/>a tuple (minimum, maximum) holding range of damage dealt by attacks</li>
+        <br/>
+        <li><code>rg.settings.collision_damage</code><br/>damage dealt by collisions</li>
+        <br/>
+        <li><code>rg.settings.suicide_damage</code><br/>damage dealt by suicides</li>
+        <br/>
+        <li><code>rg.settings.max_turns</code><br/>number of turns per game</li>
+    </ul>
+    <hr/>
+
+    <h2>Checking if there's a robot at a location</h2>
+    <p>Since <code>game.robots</code> is a dictionary of robots with locations as keys and robots as values, you can use:
+    <pre>(x, y) in game.robots</pre>
+    <p>which is <code>True</code> if there's a robot at <code>(x, y)</code> and <code>False</code> otherwise.
+    <hr/>
+
+    <div class="clearfix">
+        <h3 class="left">Back: <a href="/gettingstarted">Getting started</a></h3>
+        <h3 class="right"><b>Next:</b> <a href="/kit">Testing with the kit</a></h3>
+    </div>
+</div>

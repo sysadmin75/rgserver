@@ -1,0 +1,134 @@
+$def with (robots, upper, start_ranking, page, per, latest, os, diff, viewactive, fast, short)
+
+$def option(n):
+  $if n is None:
+    $ label = 'Noobs'
+  $elif n > 10000:
+    $ label = 'All-Bots'
+  $else:
+    $ label = '&le;%d' % n
+  <a href="?upper=$n&per=$per&viewactive=$viewactive">$:label</a>
+
+$var title: Warehouse
+
+<!--<h1>Warehouse</h1>-->
+<!--<p>A list of all compiled robots on the server, ready for battle.</p>-->
+<hr/>
+<div>
+  <a href="?upper=99999&os=1&per=$per&viewactive=$viewactive">
+    <i class="fa fa-github" rel="tooltip" title="Open-source bots"></i></a>
+  <span class="faded">&middot;</span>
+  $if not viewactive:
+    <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&per=$per&viewactive=1">
+      Active-only</a>
+  $else:
+    <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&per=$per&viewactive=">
+      View-all</a>
+  <span class="faded">&middot;</span>
+  <a href="?upper=99999&latest=1&per=$per&viewactive=$viewactive">
+    Updated</a>
+  <span class="faded">&middot;</span>
+  <a href="?upper=99999&diff=1&per=$per&viewactive=$viewactive">
+    Rising</a>
+  <span class="faded">&middot;</span>
+  <a href="?upper=99999&fast=1&per=$per&viewactive=$viewactive"
+     rel="tooltip" title="<2 seconds.">
+    Fast</a>
+  <span class="faded">&middot;</span>
+  <a href="?upper=99999&short=1&per=$per&viewactive=$viewactive"
+     rel="tooltip" title="<1000 characters.">
+    Short</a>
+  <span class="faded">&middot;</span>
+  <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&viewactive=$viewactive&per=50"
+     rel="tooltip" title="50 bots per page.">
+    /50</a>
+  <span class="faded">&middot;</span>
+  <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&viewactive=$viewactive&per=100"
+     rel="tooltip" title="100 bots per page.">
+    /100</a>
+  <span class="faded">&middot;</span>
+  <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&viewactive=$viewactive&per=200"
+     rel="tooltip" title="200 bots per page.">
+    /200</a>
+  <!--<span class="faded">&middot;</span>
+  $:option(None)-->
+  <br />
+  $:option(100000) &nbsp;
+  $for i in [24.5, 21, 18.5, 16, 15, 14, 13, 12.25, 11.5, 10, 6.5]:
+    $:option(i * 100) &nbsp;
+</div>
+<hr/>
+<div class="clearfix">
+  <div class="robot-items fill">
+    $for robot in robots:
+      $ start_ranking += 1
+      <div class="robot-item">
+        $if latest or diff:
+          <div class="timestamp">
+            $tplib.time_ago(robot.last_updated)
+          </div>
+        $else:
+          <div class="ranking">
+              $(start_ranking).
+          </div>
+        <div class="rating faded">$:tplib.drating(robot)</div>
+        $if diff:
+          $ rd = int(tplib.rating_diff(robot))
+          <div class="rating-diff $('green' if rd > 0 else 'red' if rd < 0 else 'faded')">
+            $if rd > 0:
+              +$rd
+            $elif rd < 0:
+              $rd
+            $else:
+              ~
+          </div>
+        $else:
+          <div class="rating-diff" rel="tooltip" title="$tplib.rating_diff(robot)">
+            <i class="fa $tplib.rating_diff_class(robot)"></i>
+          </div>
+        $if 'logged_in' in sess and sess['user_id'] == robot.user_id:
+          $ color_class = 'me'
+          $ exp = 'My own bot'
+        $elif tplib.timedelta_ago(robot.last_updated).days < 3:
+          $ color_class = 'fresh'
+        $elif robot.automatch:
+          $ color_class = 'automatch'
+        $else:
+          $ color_class = ''
+        <div>
+          <a class="name $color_class" href="/robot/$robot.id">
+            $robot.name
+          </a>
+          $if robot.fast:
+            <i class="fa fa-tachometer trophy-fast" rel="tooltip" title="Fast bot trophy."></i>
+          $if robot.short:
+            <i class="fa fa-suitcase trophy-short" rel="tooltip" title="Short bot trophy."></i>
+        </div>
+        $if tplib.is_mod(sess):
+          <div>
+            $tplib.rounded(100 * robot.winrate)%
+          </div>
+        <div class="open-source last defcursor faded">
+          $if not os and robot.open_source:
+            <i class="fa fa-github faded" rel="tooltip" title="This robot is open-source!"></i>
+        </div>
+      </div>
+  </div>
+  $if len(robots) == 0:
+    $if page == 0:
+      <p>No robots!</p>
+    $else:
+      <p>No more robots.</p>
+  <p class="right">
+    $if page >= 1:
+      <a href="?upper=$upper&page=$(page-1)&latest=$latest&os=$os&diff=$diff&viewactive=$viewactive&fast=$fast&short=$short&per=$per">
+        <i class="fa fa-fw fa-caret-left" id="key-left"></i>Prev
+      </a>
+    $if len(robots) == per:
+      $if page >= 1:
+        <span class="faded">&middot;</span>
+      <a href="?upper=$upper&page=$(page+1)&latest=$latest&os=$os&diff=$diff&viewactive=$viewactive&fast=$fast&short=$short&per=$per">
+        Next<i class="fa fa-fw fa-caret-right" id="key-right"></i>
+      </a>
+  </p>
+</div>

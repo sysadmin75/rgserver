@@ -1,0 +1,3 @@
+Um... someone can go into the details of setting up nginx and uwsgi. These files are here as a reference.
+
+You just need something to server the website for testing purposes. Maybe even webpy's development server.

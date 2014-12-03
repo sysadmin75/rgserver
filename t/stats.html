@@ -1,0 +1,38 @@
+$def with (users, users_month, users_compiled, users_compiled_passing, robots_available, robots, robots_compiled, robots_passing, robots_updated, matches, histories, avg_rating)
+$var title: Stats
+<h1>Stats</h1>
+<p>These are updated in real-time.<p>
+<hr/>
+
+<h2>Users</h2>
+<pre>
+$users signed up last month
+$users_compiled_passing active this month
+</pre>
+
+<h2>Robots</h2>
+<pre>
+$robots_available in the warehouse
+$robots_passing by active users
+$robots_updated updated this month
+</pre>
+
+<h2>Matches</h2>
+<pre>
+$matches matches run
+$histories match replays kept
+$avg_rating average rating
+</pre>
+
+
+<h2>Miscellaneous</h2>
+<ul>
+    <li>
+        <b>rgkit:</b>
+        $ link = 'https://pypi.python.org/pypi/rgkit'
+        <a href="$link">
+            $link
+        </a>
+    </li>
+    <li><b>Python version:</b> CPython 2.7.8</li>
+</ul>

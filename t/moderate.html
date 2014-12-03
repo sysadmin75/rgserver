@@ -1,0 +1,26 @@
+$def with (robots, maximum)
+<script type="text/javascript">
+function ping_server(node)
+{
+    ping = new Image();
+    ping.src = node.href;
+}
+
+function hide(node)
+{
+    node.parentNode.parentNode.innerHTML = '';
+}
+</script>
+
+$for r in robots:
+    $if len(r.compiled_code.split('\n')) < maximum:
+        <div>
+            <b>
+                <a class="button" href="/robot/$r.id">view</a>
+                <a class="button" href="/moderate" onclick="hide(this); return false;">hide</a>
+                <a class="button" href="/moderate/$r.id" onclick="ping_server(this); hide(this); return false;">flag</a>
+            </b>
+            <br />
+            <pre>$r.compiled_code</pre>
+            <hr />
+        </div>

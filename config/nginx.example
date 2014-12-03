@@ -1,0 +1,15 @@
+server {
+	listen 80;
+	server_name SOMETHING;
+
+	location /static {
+		alias PROJECT_PATH/static;
+	}
+	location / {
+		uwsgi_pass unix://PROJECT_PATH/uwsgi/socket;
+		include uwsgi_params;
+	}
+
+	access_log /var/log/nginx/rg_access.log timed_combined;
+	error_log /var/log/nginx/rg_error.log;
+}

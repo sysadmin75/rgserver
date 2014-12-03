@@ -1,0 +1,70 @@
+$var title: Game rules
+<div class="prose">
+    <div class="clearfix">
+        <h1 class="left no-margin">Game rules</h1>
+        <h3 class="right no-margin"><a href="/api">Back to the table of contents</a></h3>
+    </div>
+    <hr/>
+
+    <div class="rules">
+
+    <p>In Robot Game, you write programs to control robots that fight for you. The game is played on a 19x19 grid. The goal is to end up with more bots left than your opponent after 100 turns.</p>
+    <p><img src="static/rules1.png"/></p>
+    <p>Dark squares represent where you can't walk. As you can see, this effectively creates a circle arena where your robots fight.</p>
+    <p>The green squares represent spawn points. Every <b>$settings.spawn_every</b> turns, a batch of <b>$settings.spawn_per_player</b> robots will spawn at random spawn points for each player, and any robot still standing on a spawn point will die.</p>
+    <p>Each robot starts out with <b>$settings.robot_hp</b> HP.</p>
+    <p>Robots can generally act (move, attack, etc.) on the squares one above, left, right, and below it&mdash;its <i>adjacent squares</i>.</p>
+    <p><img src="http://puu.sh/53gY0.png"/></p>
+    <p>Each turn, every robot can take one action:</p>
+    <ul>
+        <li>
+            <b>Move</b> into an adjacent square. If there's already a robot
+            there, or if another robot tries to move into the same square, both
+            robots will lose <b>$settings.collision_damage</b> HP as collision
+            damage, and the move(s) won't happen. On the other hand, if a robot
+            tries to move into a square with a robot already there, but that
+            robot successfully moves out the same turn, both robots will move.
+            <br/><br/>
+            Four robots in a square, all moving clockwise, will move, as will
+            any number of robots that move in a circle (4 is the minimum,
+            robots cannot directly swap places).
+        </li>
+        <br/>
+        <li>
+            <b>Attack</b> an adjacent square. If there is a robot in that
+            square <i>at the end of the turn</i>&mdash;i.e. a robot stayed
+            there or successfully moved into that square&mdash;that robot will
+            lose between <b>$settings.attack_range[0]</b> and
+            <b>$settings.attack_range[1]</b> HP as attack damage.
+        </li>
+        <br/>
+        <li>
+            <b>Suicide</b>. The robot will die at the end of the turn, dealing
+            <b>$settings.suicide_damage</b> to any robots next to it
+            <i>at the end of the turn</i>.
+        </li>
+        <br/>
+        <li>
+            <b>Guard</b>. The robot will stay put, take half damage from
+            attacks and suicides, and take no damage from collisions.
+        </li>
+    </ul>
+    <p>
+        There is no friendly damage in this game. Collisions, attacks, and
+        suicides will <i>only damage the opponent</i>.
+    </p>
+    <p>
+        Whoever has more robots left after <b>$settings.max_turns</b> turns
+        wins.
+    </p>
+    <p>
+        Your get to code the AI for a single robot. All your robots will use
+        this AI. To win, your robots must work together with other copies of
+        themselves&mdash;to surround an enemy robot, for example.
+    </p>
+    </div>
+    <hr/>
+    <div class="clearfix">
+        <h3 class="right">Next: <a href="/gettingstarted">Getting started</a></h3>
+    </div>
+</div>

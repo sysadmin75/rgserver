@@ -1,0 +1,40 @@
+$def with (new_acc, top_robots)
+$var title: New robot
+<div class="new-robot clearfix">
+    <div class="left form">
+        $if new_acc:
+            <h1>Give your new robot a name&hellip;</h1>
+        $else:
+            <h1>Create a new robot</h1>
+        <form method="post" action="" class="editrobot">
+            <p><input type="text" name="name" id="robot-name-input" placeholder="Robot name... " autocomplete="off"/><br/>
+            <span class="small faded">Give it a good name. It's your own creation!</span></p>
+            <p><button>Create</button></p>
+        </form>
+        <hr />
+        <p class="small">Also, if you like to say mean things, please read our <a href="/namerules" target="_blank">name guidelines</a>.</p>
+    </div>
+    <div class="right preview">
+        <h3 class="faded" >Your awesome robot in the warehouse</h3>
+        <div class="preview-box">
+            <div class="robot-item clearfix">
+                <div class="ranking left">1.</div>
+                <div class="rating left faded">$tplib.rating_string(top_robots[0].rating + 1)</div>
+                <a id="robot-name" class="name left" href="#">_________</a>
+            </div>
+
+            $ start_ranking = 1
+            $for robot in top_robots:
+                $ start_ranking += 1
+                <div class="robot-item clearfix">
+                    <div class="ranking left">$(start_ranking).</div>
+                    <div class="rating left faded">$tplib.rating(robot)</div>
+                    <a class="name left" href="/robot/$robot.id">$robot.name</a>
+                    $if robot.open_source:
+                        <span class="defcursor left faded">&nbsp;<i class="fa fa-github" rel="tooltip" title="This robot is open-source!"></i></span>
+                </div>
+        </div>
+        <p class="small faded"><em>That's you up there.</em></p>
+    </div>
+</div>
+<script type="text/javascript" src="/static/newrobot.js"></script>

@@ -1,0 +1,52 @@
+$def with (robot, vim, first_time)
+$var title: Editing robot $robot.name
+$if first_time:
+    <h3 class="notice">
+      <i class="fa fa-info-circle"></i> New to Robot Game? <a href="/api">Read through the Rules</a>!
+    </h3>
+$if not robot.compiled  and not robot.compiled_code:
+    <div class="notice">
+      <strong><a href='https://github.com/ramk13/robotgame/blob/master/strategy_guide/robotgame_strategy_guide.md'>strategy guide</a></strong> by <a href="https://github.com/ramk13">ramk13</a>.
+    </div>
+
+<div class="editrobot clearfix">
+    <form method="post" action="" autocomplete="off">
+        <p class="clearfix">
+            <span class="left">
+                <input name="name" class="short" type="text" value="$robot.name" placeholder="Robot name"/>
+                &nbsp; <a href="/namerules" target="_blank" class="small faded">name guidelines</a>
+            </span>
+            <span class="right small">
+                $if vim:
+                    (Using vim mode. <a href="/robot/$robot.id/edit/mode/normal"><b>Switch to normal</b></a>.)
+                $else:
+                    (Using normal mode. <a href="/robot/$robot.id/edit/mode/vim"><b>Switch to vim</b></a>.)
+            </span>
+        </p>
+        <p><textarea id="editor" name="code" wrap="off">$robot.code</textarea></p>
+        <p class="clearfix">
+            <button class="left">Save</button>
+            <span class="right">
+                <input type="checkbox" name="open_source" id="open-source" autocomplete="off" $:('checked="checked"' if robot.open_source else '') /> <label for="open-source">Open source this robot</label>
+            </span>
+        </p>
+    </form>
+    $if robot.saved and robot.compiled:
+        <div class="success">Your robot is saved. Go challenge some robots in the <a class="success" href="/directory"><b>warehouse</b></a>!</div>
+    $else:
+        <p><a href="/compdir" target="_blank"><b>Compiling Directions</b></a></p>
+</div>
+<link rel="stylesheet" type="text/css" href="/static/codemirror.css"/>
+<link rel="stylesheet" type="text/css" href="/static/themes/base16-dark.css"/>
+
+<script type="text/javascript" src="/static/codemirror.js"></script>
+<script type="text/javascript">
+  editor_elem = document.getElementById('editor');
+  cm = CodeMirror.fromTextArea(editor_elem, {
+      mode: 'python',
+      indentUnit: 4,
+      $if vim:
+          keyMap: 'vim',
+      lineNumbers: true,
+  });
+</script>

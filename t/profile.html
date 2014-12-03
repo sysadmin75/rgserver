@@ -1,0 +1,19 @@
+$def with (user)
+$var title: Profile
+<div class="clearfix profile-page">
+    <div class="left">
+        <h1>Profile</h1>
+        <a href='/user/$user.id'>(View)</a>
+        <form method="post" action="" class="editrobot" autocomplete="off">
+            <p>
+                <textarea name="about" autocomplete="off">$user.about</textarea>
+                <br/>
+                <span class="faded">
+                    What you write here will show up on all your robots' pages.
+                    Tell a story or link to your resum&eacute; or Github!
+                </span>
+            </p>
+            <p><button>Save</button></p>
+        </form>
+    </div>
+</div>

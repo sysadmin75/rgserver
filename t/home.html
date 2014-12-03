@@ -1,0 +1,84 @@
+$def with (match=None, recent=None)
+<div class="clearfix">
+  <div class="left blurb">
+    <p class="headline">
+      Learn&nbsp;Python.
+      Code&nbsp;Robots.
+      Win&nbsp;Matches.
+    </p>
+    <p>
+      <strong>Robot Game</strong> is a competitive game played with programs.
+      Code an AI to control robots in python. Challenge others in unranked
+      matches. The server automatically queues ranked matches.
+      <strong>
+        $if tplib.is_logged_in(sess):
+          <a href="/matchlist">Match&nbsp;List<i class="fa fa-fw fa-caret-right"></i></a>
+        $else:
+          <a href="/rules">Tell&nbsp;me&nbsp;the&nbsp;rules</a>.
+      </strong>
+    </p>
+    $if recent:
+      <div class="matches fill">
+        $for rmatch in recent:
+          <div class="match-item info">
+              <a href="/match/$rmatch.id" class="faded timestamp">
+                  $tplib.time_ago(rmatch.timestamp)
+              </a>
+              <a class="name short $('normal' if rmatch.winner == 0 else 'success' if rmatch.winner == rmatch.r1_id else 'fail')"
+                href="/robot/$rmatch.r1_id">
+                  $rmatch.r1_name
+              </a>
+              <a class="faded" href="/match/$rmatch.id">vs.</span>
+              <a class="name short $('normal' if rmatch.winner == 0 else 'success' if rmatch.winner == rmatch.r2_id else 'fail')"
+                href="/robot/$rmatch.r2_id">
+                  $rmatch.r2_name
+              </a>
+          </div>
+      </div>
+  </div>
+  $if match:
+    <div class='replay'>
+      $ obstacles = ((0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0), (12, 0), (13, 0), (14, 0), (15, 0), (16, 0), (17, 0), (18, 0), (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (12, 1), (13, 1), (14, 1), (15, 1), (16, 1), (17, 1), (18, 1), (0, 2), (1, 2), (2, 2), (3, 2), (4, 2), (14, 2), (15, 2), (16, 2), (17, 2), (18, 2), (0, 3), (1, 3), (2, 3), (16, 3), (17, 3), (18, 3), (0, 4), (1, 4), (2, 4), (16, 4), (17, 4), (18, 4), (0, 5), (1, 5), (17, 5), (18, 5), (0, 6), (1, 6), (17, 6), (18, 6), (0, 7), (18, 7), (0, 8), (18, 8), (0, 9), (18, 9), (0, 10), (18, 10), (0, 11), (18, 11), (0, 12), (1, 12), (17, 12), (18, 12), (0, 13), (1, 13), (17, 13), (18, 13), (0, 14), (1, 14), (2, 14), (16, 14), (17, 14), (18, 14), (0, 15), (1, 15), (2, 15), (16, 15), (17, 15), (18, 15), (0, 16), (1, 16), (2, 16), (3, 16), (4, 16), (14, 16), (15, 16), (16, 16), (17, 16), (18, 16), (0, 17), (1, 17), (2, 17), (3, 17), (4, 17), (5, 17), (6, 17), (12, 17), (13, 17), (14, 17), (15, 17), (16, 17), (17, 17), (18, 17), (0, 18), (1, 18), (2, 18), (3, 18), (4, 18), (5, 18), (6, 18), (7, 18), (8, 18), (9, 18), (10, 18), (11, 18), (12, 18), (13, 18), (14, 18), (15, 18), (16, 18), (17, 18), (18, 18))
+        <!--<p><b>Latest Replay</b></p>
+        <h3 class="faded">
+            <a href="/robot/$match.r1_id">$match.r1_name</a> ($(tplib.match_rating(match, match.r1_id)))
+            vs.
+            <a href="/robot/$match.r2_id">$match.r2_name</a> ($(tplib.match_rating(match, match.r2_id)))
+            <a href="/match/$match.id"><i class="fa fa-external-link"></i></a>
+        </h3>
+        <h1 class='score'></h1>-->
+        <div class='board'>
+          <div class='buttons'>
+            <button class='small btn-play' id="key-space"><i class="fa fa-fw fa-play"></i></button>
+            <button class='small btn-prev' id="key-left"><i class="fa fa-fw fa-step-backward"></i></button>
+            <button class='small btn-next' id="key-right"><i class="fa fa-fw fa-step-forward"></i></button>
+            <button class='small btn-rewind' id="key-up"><i class="fa fa-fw fa-fast-backward"></i></button>
+            <label>
+              <input id="toggle-actions" type="checkbox" $('checked' if tplib.get_pref('show_actions', sess) else '') />Show&nbsp;actions</label>
+          </div>
+          <div class='board-rows'>
+            $for y in range(settings.board_size):
+              <div class='row'>
+                $for x in range(settings.board_size):
+                  $ class_name = 'obstacle' if (x, y) in obstacles else ''
+
+                  $ number = None
+                  $if x == 0:
+                    $ number = y
+                  $elif y == 0:
+                    $ number = x
+                  <div id='p_$(x)_$(y)' class='block $class_name left'>
+                    $if number is not None:
+                      $number
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+  $if tplib.is_logged_in(sess):
+    <div class="g-post" data-href="https://plus.google.com/109162859755475455960/posts/fJHQ5nKV82X"></div>
+    <script src="https://apis.google.com/js/plusone.js"></script>
+</div>
+$if match and match.data:
+  $var javascript:
+      <script src="data:text/javascript;base64,$match.data['history']"></script>

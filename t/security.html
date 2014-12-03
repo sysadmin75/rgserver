@@ -1,0 +1,40 @@
+$var title: Security
+<div class="prose">
+    <div class="clearfix">
+        <h1 class="left no-margin">Security and Limits</h1>
+        <h3 class="right no-margin"><a href="/api">Back to the table of contents</a></h3>
+    </div>
+    <hr/>
+    <p>
+        When your app <em>is</em> remote code execution, you have to be a bit
+        paranoid. To be upfront, here are the measures taken on the server.
+    </p>
+    <ul>
+      <li>all robot code is run in a chroot jail</li>
+      <li>all robot code is run as the user nobody</li>
+      <li>all robot code is run with umask set to 0</li>
+      <li>each <code>Robot</code> must take less than <strong>2000ms</strong> to compile and initialize</li>
+      <li>
+        the first <code>act</code> call of each turn is limited to
+        <strong>1500ms</strong>
+      </li>
+      <li>
+        each subsequent <code>act</code> call is limited to
+        <strong>300ms</strong>
+      </li>
+      <li>the match will be forfeited if 3 or more errors (including timeouts) occur</li>
+      <li>
+        the following modules are explicitly disabled:
+        <code>ctype, imp, inspect, multiprocessing, os, sys</code>
+      </li>
+      <li>
+        additional modules that depend on disabled modules cannot be imported (e.g. code, logging, etc)
+      </li>
+    </ul>
+    <p>Please consider these things when you're coding your robots.</p>
+    <hr/>
+    <div class="clearfix">
+        <h3 class="left">Back: <a href="/kit">Testing kit</a></h3>
+        <h3 class="right">Go: <a href="/robot/new">Make your first robot</a></h3>
+    </div>
+</div>

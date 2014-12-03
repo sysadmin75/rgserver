@@ -1,0 +1,82 @@
+$def with (robot, chart_data, full)
+$var title: Charts for $robot.name
+<div class="clearfix">
+    <div class="left">
+        <h1 class="no-margin">
+          $if tplib.timedelta_ago(robot.last_updated).days < 3:
+            $ color_class = 'fresh'
+          $elif robot.automatch:
+            $ color_class = 'automatch'
+          $else:
+            $ color_class = ''
+          <a class="name $color_class" href="/robot/$robot.id">
+            $robot.name
+          </a>
+          $if robot.fast:
+            <i class="fa fa-tachometer trophy-fast" rel="tooltip" title="Fast bot trophy."></i>
+          $if robot.short:
+            <i class="fa fa-suitcase trophy-short" rel="tooltip" title="Short bot trophy."></i>
+          $if robot.open_source:
+            <i class="fa fa-github faded" rel="tooltip" title="Open-source."></i>
+        </h1>
+        <div class="faded">
+            <div>Elo rating: $:tplib.drating(robot, decimal=True)</div>
+            <div>
+                $if robot.deleted:
+                    This robot has been deleted.
+                $elif robot.disabled:
+                    This robot has been disabled.
+                $elif robot.rating is not None:
+                    Current ranking: $(robot.ranking + 1)
+            </div>
+            <div class="small">
+              Last updated $tplib.time_ago(robot.last_updated).
+              Code length $robot.len characters.
+              <abbr rel="tooltip" title="Average time per ranked match.">
+                Average time</abbr>
+              $tplib.rounded(robot.time, 2)s.
+              $if tplib.is_mod(sess):
+              <br/>
+              Mod only:
+                <abbr rel="tooltip" title="Increases every round the bot is not matched and resets when matched.">
+                  Matchmaking probability</abbr>
+                $tplib.rounded(robot.priority, 3).
+                <abbr rel="tooltip" title="Approximate rolling win rate.">
+                  Win rate</abbr>
+                $tplib.rounded(robot.winrate, 3).
+            </div>
+        </div>
+        <div>
+          $if not robot.deleted:
+            $if 'logged_in' in sess and sess.user_id == robot.user_id or tplib.is_admin(sess):
+              <a class="nou" href="/robot/$robot.id/edit"><i class="fa fa-pencil"></i> Edit</a> <span class="faded">&middot;</span>
+            $if robot.open_source or ('logged_in' in sess and sess.user_id == robot.user_id) or tplib.is_admin(sess):
+              <a class="nou" href="/robot/$robot.id/source"><i class="fa fa-code"></i> View source</a>
+            $if tplib.is_admin(sess):
+              <span class="faded">&middot;</span>
+              $if not robot.disabled:
+                <a class="nou" href="/robot/$robot.id/disable"><i class="fa nom fa-minus-circle"></i> Disable</a>
+              $else:
+                <a class="nou" href="/robot/$robot.id/enable"><i class="fa nom fa-plus-circle"></i> Enable</a>
+              $if not robot.deleted:
+                <span class="faded">&middot;</span>
+                <a class="nou" href="/robot/$robot.id/delete"><i class="fa nom fa-trash-o"></i> Delete</a>
+              <span class="faded">&middot;</span>
+              <a class="nou" href="/robot/$robot.id/test"> Test</a>
+        </div>
+    </div>
+</div>
+<hr/>
+$if full:
+  <a href="?">View Recent History</a>
+$else:
+  <a href="?full=1">View All History</a>
+<div id="chart" class="chart"></div>
+<div id="overview" class="chart overview"></div>
+<div id="stat" class="chart stat"></div>
+$var javascript:
+    <script src="/static/flot/jquery.flot.min.js"></script>
+    <script src="/static/flot/jquery.flot.time.min.js"></script>
+    <script src="/static/flot/jquery.flot.selection.min.js"></script>
+    <script src="data:text/javascript;base64,$chart_data"></script>
+    <script src="/static/draw_plot-v2.js"></script>

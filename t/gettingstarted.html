@@ -1,0 +1,135 @@
+$var title: Getting started
+<div class="prose">
+    <div class="clearfix">
+        <h1 class="left no-margin">Getting started</h1>
+        <h3 class="right no-margin"><a href="/api">Back to the table of contents</a></h3>
+    </div>
+
+    <hr />
+    <ol>
+        <li><a href="#a1">Creating a robot</a></li>
+        <li><a href="#a2">Accessing the robot's info</a></li>
+        <li><a href="#a3">Example starting robot</a></li>
+    </ol>
+    <hr/>
+
+    <a name="a1"></a>
+    <h2>1. Creating a robot</h2>
+    <p>This is the basic structure of every robot file:</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Robot</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">some</span> <span class="n">action</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">params</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+    <p>
+        At the beginning of the game, the system creates one instance of your
+        <code>Robot</code> class. This means that class variables and your module's
+        global variables are shared between calls. Every turn the system calls
+        that single instance's <code>act</code> method once for each of your robots
+        to determine its next action. (Again, please read the rules first.) The method
+        should return one of:
+    </p>
+
+<div class="highlight"><pre><span class="p">[</span><span class="s">'move'</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)]</span>
+<span class="p">[</span><span class="s">'attack'</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)]</span>
+<span class="p">[</span><span class="s">'guard'</span><span class="p">]</span>
+<span class="p">[</span><span class="s">'suicide'</span><span class="p">]</span>
+</pre></div>
+    <p>
+        If <code>act</code> throws an exception or returns an invalid command,
+        the robot will simply guard, but if it times out too many times then it
+        will be forced to surrender the match. Please see
+        <b><a href="/security">Security</a></b> for those details.
+    </p>
+    <hr/>
+
+    <a name="a2"></a>
+    <h2>2. Accessing the robot's info</h2>
+    <p>
+        Every robot, including <code>self</code>, has the following properties
+        exposed:
+    </p>
+    <ul>
+        <li><code>location</code> &mdash; the robot's location as a tuple (x, y)</li>
+        <li><code>hp</code> &mdash; the robot's health as an int</li>
+        <li><code>player_id</code> &mdash; the robot's player_id (what "team" it belongs to)</li>
+        <li><code>robot_id</code> &mdash; a unique number identifying each robot (only available for robots on your team)</li>
+    </ul>
+    <p>For example, to access the current robot's HP, you would write <code>self.hp</code>.</p>
+    <p>Every turn, the system calls your <code>act</code> method, passing it a <code>game</code> parameter set to the following structure:</p>
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="c"># a dictionary of all robots on the field mapped</span>
+    <span class="c"># by {location: robot}</span>
+    <span class="s">'robots'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">):</span> <span class="p">{</span>
+            <span class="s">'location'</span><span class="p">:</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span>
+            <span class="s">'hp'</span><span class="p">:</span> <span class="n">hp</span><span class="p">,</span>
+            <span class="s">'player_id'</span><span class="p">:</span> <span class="n">player_id</span><span class="p">,</span>
+
+            <span class="c"># only if the robot is on your team</span>
+            <span class="s">'robot_id'</span><span class="p">:</span> <span class="n">robot_id</span>
+        <span class="p">},</span>
+
+        <span class="c"># ...and the rest of the robots</span>
+    <span class="p">},</span>
+
+    <span class="c"># number of turns passed (starts at 0)</span>
+    <span class="s">'turn'</span><span class="p">:</span> <span class="n">turn</span>
+<span class="p">}</span>
+</pre></div>
+    <p>
+        <code>game</code> and every robot in <code>game['robots']</code> are
+        instances of a special type of dict where you can access values using
+        attributes. This is to make writing code faster. So, the following are
+        equivalent:
+    </p>
+<div class="highlight"><pre><span class="n">game</span><span class="p">[</span><span class="s">'robots'</span><span class="p">][</span><span class="n">location</span><span class="p">][</span><span class="s">'hp'</span><span class="p">]</span>
+<span class="n">game</span><span class="p">[</span><span class="s">'robots'</span><span class="p">][</span><span class="n">location</span><span class="p">]</span><span class="o">.</span><span class="n">hp</span>
+<span class="n">game</span><span class="o">.</span><span class="n">robots</span><span class="p">[</span><span class="n">location</span><span class="p">]</span><span class="o">.</span><span class="n">hp</span>
+</pre></div>
+    <p>
+        Here's a quick example to print out the location of any robots that are
+        on your team:
+    </p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Robot</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">loc</span><span class="p">,</span> <span class="n">robot</span> <span class="ow">in</span> <span class="n">game</span><span class="o">.</span><span class="n">robots</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">robot</span><span class="o">.</span><span class="n">player_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">player_id</span><span class="p">:</span>
+                <span class="k">print</span> <span class="n">loc</span>
+</pre></div>
+    <hr/>
+
+    <a name="a3"></a>
+    <h2>3. Example starting robot</h2>
+    <p>
+        Here's a simple robot to use as a starting point. It looks for any
+        enemies around and attacks them. Otherwise, it tries to move to the
+        center.
+    </p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">rg</span>
+
+<span class="k">class</span> <span class="nc">Robot</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span><span class="p">):</span>
+        <span class="c"># if we're in the center, stay put</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="n">rg</span><span class="o">.</span><span class="n">CENTER_POINT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s">'guard'</span><span class="p">]</span>
+
+        <span class="c"># if there are enemies around, attack them</span>
+        <span class="k">for</span> <span class="n">loc</span><span class="p">,</span> <span class="n">bot</span> <span class="ow">in</span> <span class="n">game</span><span class="o">.</span><span class="n">robots</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">bot</span><span class="o">.</span><span class="n">player_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">player_id</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rg</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="s">'attack'</span><span class="p">,</span> <span class="n">loc</span><span class="p">]</span>
+
+        <span class="c"># move toward the center</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s">'move'</span><span class="p">,</span> <span class="n">rg</span><span class="o">.</span><span class="n">toward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="n">rg</span><span class="o">.</span><span class="n">CENTER_POINT</span><span class="p">)]</span>
+</pre></div>
+    <p>As you can see, there is a module called <code>rg</code> being used. We'll look at this next.</p>
+    <p>
+        Implementation detail: only one instance of your robot is created each
+        game, so you can store persistent data in your instance variables.
+    </p>
+    <hr/>
+    <div class="clearfix">
+        <h3 class="left">Back: <a href="/rules">Game rules</a></h3>
+        <h3 class="right">Next: <a href="/rgdocs">Library documentation</a></h3>
+    </div>
+</div>

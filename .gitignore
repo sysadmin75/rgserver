@@ -1,0 +1,13 @@
+*.pyc
+
+private/*
+tmp/*
+!tmp/README
+sessions/*
+!sessions/README
+dbbackups/*
+!dbbackups/README
+uwsgi/*
+!uwsgi/README
+
+dbcon.py
