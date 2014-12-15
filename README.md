@@ -16,7 +16,7 @@ Please use github issues for server code/infrastructure related tasks/bugs/featu
 (Presumes a brand new, fresh Ubuntu 14.04 install)
 
 1. `sudo apt-get update`
-1. `sudo apt-get install postgresql-9.3 postgresql-clinet-9.3`
+1. `sudo apt-get install postgresql-9.3 postgresql-client-9.3`
 1. `sudo -u postgres createuser --interactive`
     1. role to add: robot
     1. superuser: n
