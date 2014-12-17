@@ -9,5 +9,6 @@ dbbackups/*
 !dbbackups/README
 uwsgi/*
 !uwsgi/README
+.vagrant/*
 
 dbcon.py

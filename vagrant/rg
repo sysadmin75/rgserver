@@ -1,0 +1,52 @@
+#!/usr/bin/python
+
+# -*- mode: python -*-
+# vi: set ft=python :
+
+import argparse
+import os
+import subprocess
+import sys
+
+parser = argparse.ArgumentParser(description='Robotgame server control script.')
+subparsers = parser.add_subparsers(help='Sub-command help')
+
+parser_start = subparsers.add_parser('start', help='Start the robotgame server.')
+parser_start.set_defaults(command='start')
+
+parser_stop = subparsers.add_parser('stop', help='Stop the robotgame server.')
+parser_stop.set_defaults(command='stop')
+
+parser_restart = subparsers.add_parser('restart', help='Restart the robotgame server.')
+parser_restart.set_defaults(command='restart')
+
+args = parser.parse_args()
+
+def main():
+  if os.geteuid() == 0:
+    if args.command == 'start':
+      start()
+    elif args.command == 'stop':
+      stop()
+    elif args.command == 'restart':
+      restart()
+  else:
+    sys.stderr.write("rg must be run as root.\n")
+    exit(1)
+
+def start():
+  subprocess.call(['/etc/init.d/postgresql', 'start'])
+  subprocess.call(['/etc/init.d/nginx', 'start'])
+  subprocess.call(['sudo', '-u', 'vagrant', 'uwsgi', '--ini', '/rgserver/vagrant/uwsgi.ini'])
+
+def stop():
+  subprocess.call(['sudo', '-u', 'vagrant', 'uwsgi', '--stop', '/rgserver/uwsgi/uwsgi.pid'])
+  subprocess.call(['/etc/init.d/nginx', 'stop'])
+  subprocess.call(['/etc/init.d/postgresql', 'stop'])
+
+def restart():
+  stop()
+  start()
+
+if __name__ == '__main__':
+  main()
