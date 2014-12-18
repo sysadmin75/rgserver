@@ -3,6 +3,16 @@
 
 Please use github issues for server code/infrastructure related tasks/bugs/feature requests.
 
+## Dev environment setup using Vagrant
+
+First, download and install [Vagrant](https://www.vagrantup.com/downloads.html) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) for your operating system. For Linux and OSX, run `vagrant up` in the project directory. The Windows instructions should be similar. This should take 5-10 minutes (depending on your connection) and will set up your dev environment automatically.
+
+When the above finishes, you should be able to view your local robotgame server at `192.168.99.99` using your favorite browser.
+
+Run `vagrant ssh` to SSH into the VirtualBox VM running your server. Make some changes and run `rg restart` to see those changes.
+
+For more on using Vagrant, see the [Vagrant documentation](https://docs.vagrantup.com/v2/).
+
 ## Workflow:
 
 1.  Fork and checkout project
