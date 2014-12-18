@@ -24,7 +24,7 @@ sudo -u postgres /usr/lib/postgresql/9.4/bin/createdb robot
 sudo -u postgres /usr/lib/postgresql/9.4/bin/createdb robotgame
 psql -U robot -h localhost < /rgserver/config/db_schema.sql
 
-cp  /rgserver/vagrant/dbcon_vagrant.py /rgserver/dbcon.py
+cp  /rgserver/vagrant/dbcon.py /rgserver/dbcon.py
 cp /rgserver/vagrant/rgserver.conf /etc/nginx/sites-available/rgserver.conf
 rm /etc/nginx/sites-enabled/default
 ln -s /etc/nginx/sites-available/rgserver.conf /etc/nginx/sites-enabled/rgserver.conf

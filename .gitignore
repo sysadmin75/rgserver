@@ -11,4 +11,4 @@ uwsgi/*
 !uwsgi/README
 .vagrant/*
 
-dbcon.py
+/dbcon.py
