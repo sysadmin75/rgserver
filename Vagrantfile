@@ -17,6 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider "virtualbox" do |vb|
     vb.memory = 2048
     vb.cpus = 2
+    vb.name = "rgserver_vm"
   end
 
   config.vm.synced_folder ".", "/vagrant", disabled: true
