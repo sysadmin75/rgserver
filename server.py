@@ -1093,8 +1093,9 @@ class PageStats:
         return match_count[0]['count'] if match_count else None
 
     def average_rating(self):
-        return int(db.select('robots', what='AVG(rating)',
-            where='passed and compiled and not disabled')[0]['avg'])
+        result = db.select('robots', what='AVG(rating)',
+            where='passed and compiled and not disabled')[0]['avg']
+        return int(result) if result is not None else 0
 
     def count_matchmaker_processes(self):
         pipes = subprocess.Popen(['ps', 'uxaf'], stdout=subprocess.PIPE)
