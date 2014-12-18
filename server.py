@@ -609,8 +609,8 @@ class PageViewRobot:
             if result:
                 challenges = CHALLENGES_LIMITS - result[0]['challenges']
 
-        return ltpl('viewrobot', robot, matches, next_matches, latest_match.id,
-                    challenges)
+        return ltpl('viewrobot', robot, matches, next_matches,
+                    latest_match.id if latest_match else None, challenges)
 
 class PageRobotHistory:
 

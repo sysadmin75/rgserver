@@ -99,7 +99,7 @@ $var title: Viewing robot $robot.name
                class="faded"
                rel="tooltip"
                title="Approx. matches in queue before this one.">
-                $if match.ranked:
+                $if match.ranked and latest_id is not None:
                     (~$(max(1, match.id - latest_id)))
                 $else:
                     (~)
