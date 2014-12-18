@@ -173,11 +173,11 @@ table {
 /* fontawesome | ! Font Awesome 4.1.0 by @davegandy - http://fontawesome.io - @fontawesome | License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License) */
 @font-face {
   font-family: 'FontAwesome';
-  src: url('/static/fontawesome-webfont-v4.1.0.eot');
-  src: url('/static/fontawesome-webfont-v4.1.0.eot?#iefix') format('embedded-opentype'),
-       url('/static/fontawesome-webfont-v4.1.0.woff') format('woff'),
-       url('/static/fontawesome-webfont-v4.1.0.ttf') format('truetype'),
-       url('/static/fontawesome-webfont-v4.1.0.svg#fontawesomeregular') format('svg');
+  src: url('/static/fa/fonts/fontawesome-webfont-v4.1.0.eot');
+  src: url('/static/fa/fonts/fontawesome-webfont-v4.1.0.eot?#iefix') format('embedded-opentype'),
+       url('/static/fa/fonts/fontawesome-webfont-v4.1.0.woff') format('woff'),
+       url('/static/fa/fonts/fontawesome-webfont-v4.1.0.ttf') format('truetype'),
+       url('/static/fa/fonts/fontawesome-webfont-v4.1.0.svg#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }

@@ -8,7 +8,7 @@ $def with (content)
         <title>$content.title | Robot Game</title>
     $else:
         <title>Robot Game</title>
-    <link rel="stylesheet" href="/static/main-v5.css"/>
+    <link rel="stylesheet" href="/static/main.css?v=5"/>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -78,8 +78,8 @@ $def with (content)
       </div>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <!--[if lte IE 8]><script src="/static/flot/excanvas.min.js"></script><![endif]-->
-  <script src="/static/main-v2.js"></script>
-  <script src="/static/replay-v6.js"></script>
+  <script src="/static/main.js?v=2"></script>
+  <script src="/static/replay.js?v=6"></script>
   $if 'javascript' in content:
     $:content.javascript
   </body>
