@@ -4,6 +4,7 @@ import ast
 import difflib
 import hashlib
 import json
+import markdown
 import math
 import os
 import py_compile
@@ -183,7 +184,8 @@ def template_closure(directory):
         globals={
             'sess': sess,
             'settings': settings,
-            'tplib': tplib})
+            'tplib': tplib,
+            'markdown': markdown})
     def render(name, *params, **kwargs):
         return getattr(templates, name)(*params, **kwargs)
     return render

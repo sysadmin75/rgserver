@@ -85,7 +85,7 @@ $var title: Viewing robot $robot.name
   <h2><a href='/user/$robot.user_id'>About this programmer</a></h2>
   <div class="about">
       $if robot.about:
-          <div class="text">$robot.about</div>
+          $:markdown.markdown(robot.about, safe_mode='escape')
       $else:
           <div class="text"></div>
   </div>

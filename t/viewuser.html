@@ -21,7 +21,7 @@ $var title: Viewing user $user.id
       $if tplib.is_mod(sess):
         Registered $tplib.time_ago(user.registered_on).
     </div>
-    <div class="text">$user.about</div>
+    $:markdown.markdown(user.about, safe_mode='escape')
   </div>
 
   <hr />
