@@ -1,7 +1,10 @@
-import math
+import bleach
 import hashlib
-from datetime import datetime
+import markdown
+import math
 import tools
+
+from datetime import datetime
 
 ADMINS = (
     1, # bh (hehe, just use one account to be safe
@@ -182,3 +185,8 @@ def rating_change(match, rid, other=False):
                                match.r2_score, match.r1_score,
                                match.k_factor)
     return round(diff, 1)
+
+def safe_markdown(string):
+    string = bleach.clean(string)
+    string = markdown.markdown(string)
+    return bleach.clean(string, tags=bleach.ALLOWED_TAGS+['p'])
