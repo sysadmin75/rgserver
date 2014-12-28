@@ -179,11 +179,14 @@ def logout_user(sess):
 
 def template_closure(directory):
     global settings
-    templates = web.template.render(directory,
+    templates = web.template.render(
+        directory,
         globals={
             'sess': sess,
             'settings': settings,
-            'tplib': tplib})
+            'tplib': tplib,
+        },
+    )
     def render(name, *params, **kwargs):
         return getattr(templates, name)(*params, **kwargs)
     return render
