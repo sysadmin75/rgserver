@@ -189,4 +189,5 @@ def rating_change(match, rid, other=False):
 def safe_markdown(string):
     string = bleach.clean(string)
     string = markdown.markdown(string)
-    return bleach.clean(string, tags=bleach.ALLOWED_TAGS+['p'])
+    others = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+    return bleach.clean(string, tags=bleach.ALLOWED_TAGS+others)
