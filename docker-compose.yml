@@ -1,3 +1,21 @@
+dbdata:
+  image: postgres:9.4
+  command: true
+dbbackup:
+  image: busybox
+  volumes_from:
+    - dbdata
+  command: true
+db:
+  build: postgres
+  volumes_from:
+    - dbdata
+app:
+  build: app
+  volumes:
+    - app:/usr/src/app
+  links:
+    - db
 server:
   image: nginx:1.9
   volumes:
@@ -7,13 +25,3 @@ server:
     - "8000:80"
   links:
     - app
-app:
-  build: app
-  volumes:
-    - app:/usr/src/app
-  links:
-    - db
-db:
-  image: postgres:9.4
-  volumes:
-    - postgres:/var/lib/postgresql/my
