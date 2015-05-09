@@ -1,0 +1,16 @@
+server:
+  build: nginx
+  volumes:
+    - static:/usr/local/static
+  ports:
+    - "8000:80"
+  links:
+    - app
+app:
+  build: app
+  volumes:
+    - app:/usr/src/app
+  links:
+    - db
+db:
+  image: postgres:9.4
