@@ -18,7 +18,7 @@ SET client_min_messages = warning;
 -- Name: robotgame; Type: DATABASE; Schema: -; Owner: robot
 --
 
-CREATE DATABASE robotgame WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_CA.UTF-8' LC_CTYPE = 'en_CA.UTF-8';
+CREATE DATABASE robotgame WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8';
 
 
 ALTER DATABASE robotgame OWNER TO robot;
@@ -34,7 +34,7 @@ SET client_min_messages = warning;
 
 --
 -- TOC entry 184 (class 3079 OID 11861)
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
@@ -43,7 +43,7 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 --
 -- TOC entry 2097 (class 0 OID 0)
 -- Dependencies: 184
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -57,7 +57,7 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 172 (class 1259 OID 16418)
--- Name: fail_bots; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
+-- Name: fail_bots; Type: TABLE; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE TABLE fail_bots (
@@ -95,7 +95,7 @@ ALTER SEQUENCE fail_bots_id_seq OWNED BY fail_bots.id;
 
 --
 -- TOC entry 174 (class 1259 OID 16426)
--- Name: history; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
+-- Name: history; Type: TABLE; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE TABLE history (
@@ -134,7 +134,7 @@ ALTER SEQUENCE history_id_seq OWNED BY history.id;
 
 --
 -- TOC entry 176 (class 1259 OID 16434)
--- Name: matches; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
+-- Name: matches; Type: TABLE; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE TABLE matches (
@@ -186,7 +186,7 @@ ALTER SEQUENCE matches_id_seq OWNED BY matches.id;
 
 --
 -- TOC entry 178 (class 1259 OID 16444)
--- Name: os_bots; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
+-- Name: os_bots; Type: TABLE; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE TABLE os_bots (
@@ -224,7 +224,7 @@ ALTER SEQUENCE os_bots_id_seq OWNED BY os_bots.id;
 
 --
 -- TOC entry 180 (class 1259 OID 16452)
--- Name: robots; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
+-- Name: robots; Type: TABLE; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE TABLE robots (
@@ -282,7 +282,7 @@ ALTER SEQUENCE robots_id_seq OWNED BY robots.id;
 
 --
 -- TOC entry 182 (class 1259 OID 16475)
--- Name: users; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE TABLE users (
@@ -376,7 +376,7 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 
 --
 -- TOC entry 1954 (class 2606 OID 16497)
--- Name: fail_bots_hash_key; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
+-- Name: fail_bots_hash_key; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
 --
 
 ALTER TABLE ONLY fail_bots
@@ -385,7 +385,7 @@ ALTER TABLE ONLY fail_bots
 
 --
 -- TOC entry 1956 (class 2606 OID 16499)
--- Name: fail_bots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
+-- Name: fail_bots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
 --
 
 ALTER TABLE ONLY fail_bots
@@ -394,7 +394,7 @@ ALTER TABLE ONLY fail_bots
 
 --
 -- TOC entry 1958 (class 2606 OID 16501)
--- Name: history_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
+-- Name: history_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
 --
 
 ALTER TABLE ONLY history
@@ -403,7 +403,7 @@ ALTER TABLE ONLY history
 
 --
 -- TOC entry 1963 (class 2606 OID 16503)
--- Name: matches_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
+-- Name: matches_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
 --
 
 ALTER TABLE ONLY matches
@@ -412,7 +412,7 @@ ALTER TABLE ONLY matches
 
 --
 -- TOC entry 1968 (class 2606 OID 16505)
--- Name: os_bots_hash_key; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
+-- Name: os_bots_hash_key; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
 --
 
 ALTER TABLE ONLY os_bots
@@ -421,7 +421,7 @@ ALTER TABLE ONLY os_bots
 
 --
 -- TOC entry 1970 (class 2606 OID 16507)
--- Name: os_bots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
+-- Name: os_bots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
 --
 
 ALTER TABLE ONLY os_bots
@@ -430,7 +430,7 @@ ALTER TABLE ONLY os_bots
 
 --
 -- TOC entry 1974 (class 2606 OID 16509)
--- Name: robots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
+-- Name: robots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
 --
 
 ALTER TABLE ONLY robots
@@ -439,7 +439,7 @@ ALTER TABLE ONLY robots
 
 --
 -- TOC entry 1977 (class 2606 OID 16511)
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
 --
 
 ALTER TABLE ONLY users
@@ -448,7 +448,7 @@ ALTER TABLE ONLY users
 
 --
 -- TOC entry 1959 (class 1259 OID 16512)
--- Name: history_timestamp_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
+-- Name: history_timestamp_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE INDEX history_timestamp_idx ON history USING btree ("timestamp");
@@ -456,7 +456,7 @@ CREATE INDEX history_timestamp_idx ON history USING btree ("timestamp");
 
 --
 -- TOC entry 1960 (class 1259 OID 16513)
--- Name: match_id; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
+-- Name: match_id; Type: INDEX; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE INDEX match_id ON history USING btree (match_id);
@@ -464,7 +464,7 @@ CREATE INDEX match_id ON history USING btree (match_id);
 
 --
 -- TOC entry 1961 (class 1259 OID 16514)
--- Name: matches_id_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
+-- Name: matches_id_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE INDEX matches_id_idx ON matches USING btree (id) WHERE ((state = 0) OR (state = 1));
@@ -472,7 +472,7 @@ CREATE INDEX matches_id_idx ON matches USING btree (id) WHERE ((state = 0) OR (s
 
 --
 -- TOC entry 1964 (class 1259 OID 16515)
--- Name: matches_timestamp; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
+-- Name: matches_timestamp; Type: INDEX; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE INDEX matches_timestamp ON matches USING btree ("timestamp");
@@ -480,7 +480,7 @@ CREATE INDEX matches_timestamp ON matches USING btree ("timestamp");
 
 --
 -- TOC entry 1965 (class 1259 OID 16516)
--- Name: r1_id; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
+-- Name: r1_id; Type: INDEX; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE INDEX r1_id ON matches USING btree (r1_id);
@@ -488,7 +488,7 @@ CREATE INDEX r1_id ON matches USING btree (r1_id);
 
 --
 -- TOC entry 1966 (class 1259 OID 16517)
--- Name: r2_id; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
+-- Name: r2_id; Type: INDEX; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE INDEX r2_id ON matches USING btree (r2_id);
@@ -496,7 +496,7 @@ CREATE INDEX r2_id ON matches USING btree (r2_id);
 
 --
 -- TOC entry 1971 (class 1259 OID 16518)
--- Name: rating; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
+-- Name: rating; Type: INDEX; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE INDEX rating ON robots USING btree (rating);
@@ -504,7 +504,7 @@ CREATE INDEX rating ON robots USING btree (rating);
 
 --
 -- TOC entry 1972 (class 1259 OID 16519)
--- Name: robots_id_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
+-- Name: robots_id_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE INDEX robots_id_idx ON robots USING btree (id) WHERE (fast OR short);
@@ -512,7 +512,7 @@ CREATE INDEX robots_id_idx ON robots USING btree (id) WHERE (fast OR short);
 
 --
 -- TOC entry 1975 (class 1259 OID 16520)
--- Name: user_id; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
+-- Name: user_id; Type: INDEX; Schema: public; Owner: robot; Tablespace:
 --
 
 CREATE INDEX user_id ON robots USING btree (user_id);
@@ -559,4 +559,3 @@ ALTER TABLE ONLY robots
 --
 -- PostgreSQL database dump complete
 --
-
