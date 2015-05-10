@@ -10,4 +10,4 @@ and [Compose](https://docs.docker.com/compose/install/) for your operating syste
 
 1.  Fork and `git clone` project
 2.  Run `docker-compose up`
-3.  The website should be live at http://localhost:8000.
+3.  The website should be live at [localhost:8000](http://localhost:8000).

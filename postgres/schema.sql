@@ -2,9 +2,9 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.4beta2
--- Dumped by pg_dump version 9.4beta2
--- Started on 2014-12-03 16:56:37 EST
+-- Dumped from database version 9.4.1
+-- Dumped by pg_dump version 9.4.1
+-- Started on 2015-05-09 22:44:30 EDT
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -34,16 +34,16 @@ SET client_min_messages = warning;
 
 --
 -- TOC entry 184 (class 3079 OID 11861)
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2097 (class 0 OID 0)
+-- TOC entry 2098 (class 0 OID 0)
 -- Dependencies: 184
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -57,7 +57,7 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 172 (class 1259 OID 16418)
--- Name: fail_bots; Type: TABLE; Schema: public; Owner: robot; Tablespace:
+-- Name: fail_bots; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE TABLE fail_bots (
@@ -85,7 +85,7 @@ CREATE SEQUENCE fail_bots_id_seq
 ALTER TABLE fail_bots_id_seq OWNER TO robot;
 
 --
--- TOC entry 2098 (class 0 OID 0)
+-- TOC entry 2099 (class 0 OID 0)
 -- Dependencies: 173
 -- Name: fail_bots_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: robot
 --
@@ -95,7 +95,7 @@ ALTER SEQUENCE fail_bots_id_seq OWNED BY fail_bots.id;
 
 --
 -- TOC entry 174 (class 1259 OID 16426)
--- Name: history; Type: TABLE; Schema: public; Owner: robot; Tablespace:
+-- Name: history; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE TABLE history (
@@ -124,7 +124,7 @@ CREATE SEQUENCE history_id_seq
 ALTER TABLE history_id_seq OWNER TO robot;
 
 --
--- TOC entry 2099 (class 0 OID 0)
+-- TOC entry 2100 (class 0 OID 0)
 -- Dependencies: 175
 -- Name: history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: robot
 --
@@ -134,7 +134,7 @@ ALTER SEQUENCE history_id_seq OWNED BY history.id;
 
 --
 -- TOC entry 176 (class 1259 OID 16434)
--- Name: matches; Type: TABLE; Schema: public; Owner: robot; Tablespace:
+-- Name: matches; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE TABLE matches (
@@ -176,7 +176,7 @@ CREATE SEQUENCE matches_id_seq
 ALTER TABLE matches_id_seq OWNER TO robot;
 
 --
--- TOC entry 2100 (class 0 OID 0)
+-- TOC entry 2102 (class 0 OID 0)
 -- Dependencies: 177
 -- Name: matches_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: robot
 --
@@ -186,7 +186,7 @@ ALTER SEQUENCE matches_id_seq OWNED BY matches.id;
 
 --
 -- TOC entry 178 (class 1259 OID 16444)
--- Name: os_bots; Type: TABLE; Schema: public; Owner: robot; Tablespace:
+-- Name: os_bots; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE TABLE os_bots (
@@ -214,7 +214,7 @@ CREATE SEQUENCE os_bots_id_seq
 ALTER TABLE os_bots_id_seq OWNER TO robot;
 
 --
--- TOC entry 2101 (class 0 OID 0)
+-- TOC entry 2104 (class 0 OID 0)
 -- Dependencies: 179
 -- Name: os_bots_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: robot
 --
@@ -224,7 +224,7 @@ ALTER SEQUENCE os_bots_id_seq OWNED BY os_bots.id;
 
 --
 -- TOC entry 180 (class 1259 OID 16452)
--- Name: robots; Type: TABLE; Schema: public; Owner: robot; Tablespace:
+-- Name: robots; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE TABLE robots (
@@ -272,7 +272,7 @@ CREATE SEQUENCE robots_id_seq
 ALTER TABLE robots_id_seq OWNER TO robot;
 
 --
--- TOC entry 2102 (class 0 OID 0)
+-- TOC entry 2106 (class 0 OID 0)
 -- Dependencies: 181
 -- Name: robots_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: robot
 --
@@ -282,7 +282,7 @@ ALTER SEQUENCE robots_id_seq OWNED BY robots.id;
 
 --
 -- TOC entry 182 (class 1259 OID 16475)
--- Name: users; Type: TABLE; Schema: public; Owner: robot; Tablespace:
+-- Name: users; Type: TABLE; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE TABLE users (
@@ -318,7 +318,7 @@ CREATE SEQUENCE users_id_seq
 ALTER TABLE users_id_seq OWNER TO robot;
 
 --
--- TOC entry 2103 (class 0 OID 0)
+-- TOC entry 2109 (class 0 OID 0)
 -- Dependencies: 183
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: robot
 --
@@ -375,8 +375,8 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 
 
 --
--- TOC entry 1954 (class 2606 OID 16497)
--- Name: fail_bots_hash_key; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1954 (class 2606 OID 71442)
+-- Name: fail_bots_hash_key; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
 --
 
 ALTER TABLE ONLY fail_bots
@@ -384,8 +384,8 @@ ALTER TABLE ONLY fail_bots
 
 
 --
--- TOC entry 1956 (class 2606 OID 16499)
--- Name: fail_bots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1956 (class 2606 OID 71444)
+-- Name: fail_bots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
 --
 
 ALTER TABLE ONLY fail_bots
@@ -393,8 +393,8 @@ ALTER TABLE ONLY fail_bots
 
 
 --
--- TOC entry 1958 (class 2606 OID 16501)
--- Name: history_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1958 (class 2606 OID 71446)
+-- Name: history_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
 --
 
 ALTER TABLE ONLY history
@@ -402,8 +402,8 @@ ALTER TABLE ONLY history
 
 
 --
--- TOC entry 1963 (class 2606 OID 16503)
--- Name: matches_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1963 (class 2606 OID 71448)
+-- Name: matches_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
 --
 
 ALTER TABLE ONLY matches
@@ -411,8 +411,8 @@ ALTER TABLE ONLY matches
 
 
 --
--- TOC entry 1968 (class 2606 OID 16505)
--- Name: os_bots_hash_key; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1968 (class 2606 OID 71450)
+-- Name: os_bots_hash_key; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
 --
 
 ALTER TABLE ONLY os_bots
@@ -420,8 +420,8 @@ ALTER TABLE ONLY os_bots
 
 
 --
--- TOC entry 1970 (class 2606 OID 16507)
--- Name: os_bots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1970 (class 2606 OID 71452)
+-- Name: os_bots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
 --
 
 ALTER TABLE ONLY os_bots
@@ -429,8 +429,8 @@ ALTER TABLE ONLY os_bots
 
 
 --
--- TOC entry 1974 (class 2606 OID 16509)
--- Name: robots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1974 (class 2606 OID 71454)
+-- Name: robots_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
 --
 
 ALTER TABLE ONLY robots
@@ -438,8 +438,8 @@ ALTER TABLE ONLY robots
 
 
 --
--- TOC entry 1977 (class 2606 OID 16511)
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1977 (class 2606 OID 71456)
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: robot; Tablespace: 
 --
 
 ALTER TABLE ONLY users
@@ -447,79 +447,79 @@ ALTER TABLE ONLY users
 
 
 --
--- TOC entry 1959 (class 1259 OID 16512)
--- Name: history_timestamp_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1959 (class 1259 OID 71457)
+-- Name: history_timestamp_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE INDEX history_timestamp_idx ON history USING btree ("timestamp");
 
 
 --
--- TOC entry 1960 (class 1259 OID 16513)
--- Name: match_id; Type: INDEX; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1960 (class 1259 OID 71458)
+-- Name: match_id; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE INDEX match_id ON history USING btree (match_id);
 
 
 --
--- TOC entry 1961 (class 1259 OID 16514)
--- Name: matches_id_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1961 (class 1259 OID 71459)
+-- Name: matches_id_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE INDEX matches_id_idx ON matches USING btree (id) WHERE ((state = 0) OR (state = 1));
 
 
 --
--- TOC entry 1964 (class 1259 OID 16515)
--- Name: matches_timestamp; Type: INDEX; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1964 (class 1259 OID 71460)
+-- Name: matches_timestamp; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE INDEX matches_timestamp ON matches USING btree ("timestamp");
 
 
 --
--- TOC entry 1965 (class 1259 OID 16516)
--- Name: r1_id; Type: INDEX; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1965 (class 1259 OID 71461)
+-- Name: r1_id; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE INDEX r1_id ON matches USING btree (r1_id);
 
 
 --
--- TOC entry 1966 (class 1259 OID 16517)
--- Name: r2_id; Type: INDEX; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1966 (class 1259 OID 71462)
+-- Name: r2_id; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE INDEX r2_id ON matches USING btree (r2_id);
 
 
 --
--- TOC entry 1971 (class 1259 OID 16518)
--- Name: rating; Type: INDEX; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1971 (class 1259 OID 71468)
+-- Name: rating; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE INDEX rating ON robots USING btree (rating);
 
 
 --
--- TOC entry 1972 (class 1259 OID 16519)
--- Name: robots_id_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1972 (class 1259 OID 71471)
+-- Name: robots_id_idx; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE INDEX robots_id_idx ON robots USING btree (id) WHERE (fast OR short);
 
 
 --
--- TOC entry 1975 (class 1259 OID 16520)
--- Name: user_id; Type: INDEX; Schema: public; Owner: robot; Tablespace:
+-- TOC entry 1975 (class 1259 OID 71472)
+-- Name: user_id; Type: INDEX; Schema: public; Owner: robot; Tablespace: 
 --
 
 CREATE INDEX user_id ON robots USING btree (user_id);
 
 
 --
--- TOC entry 1978 (class 2606 OID 16521)
+-- TOC entry 1978 (class 2606 OID 71473)
 -- Name: history_match_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: robot
 --
 
@@ -528,7 +528,7 @@ ALTER TABLE ONLY history
 
 
 --
--- TOC entry 1979 (class 2606 OID 16526)
+-- TOC entry 1979 (class 2606 OID 71478)
 -- Name: matches_r1_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: robot
 --
 
@@ -537,7 +537,7 @@ ALTER TABLE ONLY matches
 
 
 --
--- TOC entry 1980 (class 2606 OID 16531)
+-- TOC entry 1980 (class 2606 OID 71483)
 -- Name: matches_r2_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: robot
 --
 
@@ -546,7 +546,7 @@ ALTER TABLE ONLY matches
 
 
 --
--- TOC entry 1981 (class 2606 OID 16536)
+-- TOC entry 1981 (class 2606 OID 71488)
 -- Name: robots_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: robot
 --
 
@@ -554,8 +554,88 @@ ALTER TABLE ONLY robots
     ADD CONSTRAINT robots_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
--- Completed on 2014-12-03 16:56:37 EST
+--
+-- TOC entry 2097 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO robot;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- TOC entry 2101 (class 0 OID 0)
+-- Dependencies: 176
+-- Name: matches; Type: ACL; Schema: public; Owner: robot
+--
+
+REVOKE ALL ON TABLE matches FROM PUBLIC;
+REVOKE ALL ON TABLE matches FROM robot;
+GRANT ALL ON TABLE matches TO robot;
+
+
+--
+-- TOC entry 2103 (class 0 OID 0)
+-- Dependencies: 177
+-- Name: matches_id_seq; Type: ACL; Schema: public; Owner: robot
+--
+
+REVOKE ALL ON SEQUENCE matches_id_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE matches_id_seq FROM robot;
+GRANT ALL ON SEQUENCE matches_id_seq TO robot;
+
+
+--
+-- TOC entry 2105 (class 0 OID 0)
+-- Dependencies: 180
+-- Name: robots; Type: ACL; Schema: public; Owner: robot
+--
+
+REVOKE ALL ON TABLE robots FROM PUBLIC;
+REVOKE ALL ON TABLE robots FROM robot;
+GRANT ALL ON TABLE robots TO robot;
+
+
+--
+-- TOC entry 2107 (class 0 OID 0)
+-- Dependencies: 181
+-- Name: robots_id_seq; Type: ACL; Schema: public; Owner: robot
+--
+
+REVOKE ALL ON SEQUENCE robots_id_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE robots_id_seq FROM robot;
+GRANT ALL ON SEQUENCE robots_id_seq TO robot;
+
+
+--
+-- TOC entry 2108 (class 0 OID 0)
+-- Dependencies: 182
+-- Name: users; Type: ACL; Schema: public; Owner: robot
+--
+
+REVOKE ALL ON TABLE users FROM PUBLIC;
+REVOKE ALL ON TABLE users FROM robot;
+GRANT ALL ON TABLE users TO robot;
+
+
+--
+-- TOC entry 2110 (class 0 OID 0)
+-- Dependencies: 183
+-- Name: users_id_seq; Type: ACL; Schema: public; Owner: robot
+--
+
+REVOKE ALL ON SEQUENCE users_id_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE users_id_seq FROM robot;
+GRANT ALL ON SEQUENCE users_id_seq TO robot;
+
+
+-- Completed on 2015-05-09 22:44:30 EDT
 
 --
 -- PostgreSQL database dump complete
 --
+
