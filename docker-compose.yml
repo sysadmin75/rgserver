@@ -14,7 +14,7 @@ matchmaker:
   build: matchmaker
   volumes:
     - matchmaker:/usr/src/app
-    - matchlogs:/var/log/robot/matches
+    - matchlog:/var/log/robot/matches
   links:
     - db
 webapp:
