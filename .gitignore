@@ -1,2 +1,2 @@
 *.pyc
-app/sessions/*
+webapp/sessions/*

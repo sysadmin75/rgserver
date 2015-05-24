@@ -10,10 +10,10 @@ db:
   build: postgres
   volumes_from:
     - dbdata
-app:
-  build: app
+webapp:
+  build: webapp
   volumes:
-    - app:/usr/src/app
+    - webapp:/usr/src/webapp
   links:
     - db
 server:
@@ -24,4 +24,4 @@ server:
   ports:
     - "8000:80"
   links:
-    - app
+    - webapp
