@@ -99,7 +99,7 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
             if 'query' in data:
                 load_map('rgkit/maps/default.py')
                 mod = imp.new_module('usercode')
-                #drop_privileges()
+                drop_privileges()
                 robot = make_user_robot(user_code, mod)
                 queue_out.put({'result': 'ok'})
             else:

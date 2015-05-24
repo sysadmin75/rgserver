@@ -17,6 +17,7 @@ matchmaker:
     - matchlog:/var/log/robot/matches
   links:
     - db
+  command: './restart'
 webapp:
   build: webapp
   volumes:

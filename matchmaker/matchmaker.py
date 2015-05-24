@@ -246,7 +246,7 @@ def sync_get_match(db, lock):
 
 
 def run_unranked_match(lock):
-    db = dbcon.connect_fresh_db()
+    db = dbcon.connect_db()
     match = sync_get_match(db, lock)
     ret = 0
     if match:
@@ -257,17 +257,15 @@ def run_unranked_match(lock):
             match.id, match.seed))
         rungame.run_match(db, match)
         ret = 1
-    db.ctx.db.close()
     return ret
 
 
 def run_ranked_match(match):
-    db = dbcon.connect_fresh_db()
+    db = dbcon.connect_db()
     ret = 0
     if match:
         rungame.run_match(db, match)
         ret = 1
-    db.ctx.db.close()
     return ret
 
 
@@ -293,10 +291,10 @@ def main():
     db = dbcon.connect_db()
     # Clean matches
     db.update('matches', where='state = %d' % ms.RUNNING, state=ms.WAITING)
-    cron = gamecron.Scheduler()
     lock = multiprocessing.Manager().Lock()
 
     while True:
+        cron = gamecron.Scheduler()
         try_create_matches(db)
         ranked_matches = get_matches(db, ranked=True, limit=BATCH)
         n = 1
