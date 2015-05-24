@@ -291,45 +291,47 @@ def main():
 
     print('\nstarting matchmaker {0}'.format(datetime.datetime.today()))
     db = dbcon.connect_db()
-    try_create_matches(db)
+    # Clean matches
+    db.update('matches', where='state = %d' % ms.RUNNING, state=ms.WAITING)
     cron = gamecron.Scheduler()
     lock = multiprocessing.Manager().Lock()
 
-    ranked_matches = get_matches(db, ranked=True, limit=BATCH)
-    n = 1
-    for match in ranked_matches:
-        lap()
-        u_count += cron.schedule(run_unranked_match, lock)
-        u_time += lap()
-        r1_rating = match.r1_rating or tools.DEFAULT_RATING
-        r2_rating = match.r2_rating or tools.DEFAULT_RATING
-        print('{6:2} ranked {0:5}({1:.5g}) v {2:5}({3:.5g}) : m {4} s {5}'.format(
-            match.r1_id, r1_rating, match.r2_id, r2_rating,
-            match.id, match.seed, n))
-        sys.stdout.flush()
-        n += 1
-        r_count += cron.schedule(run_ranked_match, match)
-        r_time += lap()
+    while True:
+        try_create_matches(db)
+        ranked_matches = get_matches(db, ranked=True, limit=BATCH)
+        n = 1
+        for match in ranked_matches:
+            lap()
+            u_count += cron.schedule(run_unranked_match, lock)
+            u_time += lap()
+            r1_rating = match.r1_rating or tools.DEFAULT_RATING
+            r2_rating = match.r2_rating or tools.DEFAULT_RATING
+            print('{6:2} ranked {0:5}({1:.5g}) v {2:5}({3:.5g}) : m {4} s {5}'.format(
+                match.r1_id, r1_rating, match.r2_id, r2_rating,
+                match.id, match.seed, n))
+            sys.stdout.flush()
+            n += 1
+            r_count += cron.schedule(run_ranked_match, match)
+            r_time += lap()
 
-    if r_count:
-        print('R - avg {0:.3g}s {1} games in {2:.4g}s '.format(
-            r_time / r_count, r_count, r_time))
-    rest = REST
-    rested = 0
-    print('resting for {0}s'.format(rest))
-    while rested < rest:
-        rested += PER_REST
-        sys.stdout.flush()
-        time.sleep(PER_REST)
-        lap()
-        u_count += cron.schedule(run_unranked_match, lock)
-        u_time += lap()
-    if u_count:
-        print('U - avg {0:.3g}s {1} games in {2:.4g}s '.format(
-            u_time / u_count, u_count, u_time))
-    print('rested for {0}s'.format(rested))
-    cron.wait()
-    os.system('python matchmaker.py &')
+        if r_count:
+            print('R - avg {0:.3g}s {1} games in {2:.4g}s '.format(
+                r_time / r_count, r_count, r_time))
+        rest = REST
+        rested = 0
+        print('resting for {0}s'.format(rest))
+        while rested < rest:
+            rested += PER_REST
+            sys.stdout.flush()
+            time.sleep(PER_REST)
+            lap()
+            u_count += cron.schedule(run_unranked_match, lock)
+            u_time += lap()
+        if u_count:
+            print('U - avg {0:.3g}s {1} games in {2:.4g}s '.format(
+                u_time / u_count, u_count, u_time))
+        print('rested for {0}s'.format(rested))
+        cron.wait()
 
 
 if __name__ == '__main__':

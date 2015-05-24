@@ -13,7 +13,7 @@ class NonDaemonPool(multiprocessing.pool.Pool):
     Process = NonDaemonProcess
 
 MAX_PROCESSES = 1
-MAX_TASKS = 100
+MAX_TASKS = 2
 class Scheduler:
     def __init__(self, procs=MAX_PROCESSES, max_tasks=MAX_TASKS):
         self._pool = NonDaemonPool(procs, maxtasksperchild=max_tasks)
