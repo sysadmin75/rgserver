@@ -1,6 +1,8 @@
 [Robot Game](http://robotgame.net) server code
 ===================================
 
+> **Deprecated master** branch in favour of [docker branch](https://github.com/RobotGame/rgserver/tree/docker) as soon as it is ready to be deployed to production.
+
 Please use github issues for server code/infrastructure related tasks/bugs/feature requests.
 
 ## Dev environment setup using Vagrant
