@@ -1,13 +1,15 @@
 [Robot Game](http://robotgame.net) server code
 ===================================
 
-## Dev environment setup using Docker
+## Setup
 
-Download and install [Docker](https://docs.docker.com/installation/#installation)
-and [Compose](https://docs.docker.com/compose/install/) for your operating system.
+Install [Docker](https://docs.docker.com/installation/#installation)
+and [Compose](https://docs.docker.com/compose/install/).
 
-## Initialization:
+## Initialization
 
-1.  Fork and `git clone` project
-2.  Run `docker-compose up`
-3.  The website should be live at [localhost:8000](http://localhost:8000).
+1.  Fork and `git clone`.
+2.  Run `docker-compose up` (may need `sudo`).
+
+The website is now live at [localhost:8000](http://localhost:8000). The matchmaker
+has started automatically.
