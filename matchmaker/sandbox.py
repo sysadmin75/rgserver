@@ -32,6 +32,7 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
     # Cannot use sys as drop_privileges will disable it
     out = sys.stdout = sys.stderr = Logger()
     trace_func = traceback.print_exc
+    exit_func = os._exit
     try:
         def limit_resources():
             MEM_LIMIT = (2 ** 20) * 1024 # MB
@@ -110,3 +111,4 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
                 queue_out.put({'result': 'ok', 'ret': action})
     except:
         trace_func(file=out)
+        exit_func(0)

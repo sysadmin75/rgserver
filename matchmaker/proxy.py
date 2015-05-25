@@ -15,9 +15,9 @@ import rgkit.rg
 sys.modules['rg'] = sys.modules['rgkit.rg']
 sys.modules['settings'] = sys.modules['rgkit.settings']
 
-MAX_MS_PER_FIRST_ACT = 100
-MAX_MS_PER_ACT = 100
-MAX_MS_PER_CALL = 200
+MAX_MS_PER_FIRST_ACT = 1500
+MAX_MS_PER_ACT = 1000
+MAX_MS_PER_CALL = 2000
 
 
 class TimeoutError(Exception): pass
@@ -26,7 +26,6 @@ class TimeoutCannotRecoverError(Exception): pass
 
 class ProxyProcess(object):
     def __init__(self, user_code):
-        print('initprocess\n')
         self._queue_data = mp.Queue()
         self._queue_action = cpu.CPUTimeoutQueue()
         self._queue_output = mp.Queue()
@@ -39,7 +38,6 @@ class ProxyProcess(object):
         self.pid = self.process.pid
         print(self.pid)
         self._ignore = 0
-        print('finishedinit\n')
 
     def get_response(self, data, ms_timelimit=MAX_MS_PER_ACT):
         s_timelimit = ms_timelimit * 0.001
@@ -131,7 +129,6 @@ class ProxyBot(object):
 
 def make_player(user_code, output_file):
     global settings
-    output_file.write('start_make_player\n')
 
     robot = None
     proxy_proc = None
@@ -144,15 +141,11 @@ def make_player(user_code, output_file):
             output_file.write(str(result))
     except Exception as e:
         if proxy_proc is not None:
-            output_file.write('Process output:\n')
             output_file.write(proxy_proc.get_output())
-        output_file.write('make_player_exception\n')
         traceback.print_exc(file=output_file)
-        output_file.write('make_player_exception_complete\n')
 
     if proxy_proc is not None:
         output_file.write(proxy_proc.get_output())
-    output_file.write('end_make_player\n')
     if robot is None:
         return None, None
     return proxy_proc, rgkit.game.Player(robot=robot)

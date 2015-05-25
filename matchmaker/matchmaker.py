@@ -64,9 +64,7 @@ def try_create_matches(db):
                     if (obot != bot
                             and obot['id'] not in matched
                             and obot['id'] != bot['last_opponent']
-                            and obot['last_opponent'] != bot['id']
-                            and not (bot['user_id'] == 1
-                                     and obot['user_id'] == 1)):
+                            and obot['last_opponent'] != bot['id']):
                         p = match_prob(obot['rating']) * obot['priority']
                         num += 1
                     else:
@@ -108,19 +106,11 @@ def try_create_matches(db):
         avg_rating = db.select('robots', what='AVG(rating)',
                 where='passed and compiled and not disabled')[0]['avg']
         print('Avg rating: {}'.format(avg_rating))
-        if avg_rating > tools.DEFAULT_RATING:
-            robots = db.select('robots',
-                what='''id, user_id, name, rating, automatch, last_opponent,
-                        priority, time, last_match, winrate, last_updated,
-                        disabled''',
-                where='''((passed and compiled and not disabled) or
-                          (user_id = 1 and disabled and not deleted))''')
-        else:
-            robots = db.select('robots',
-                what='''id, user_id, name, rating, automatch, last_opponent,
-                        priority, time, last_match, winrate, last_updated,
-                        disabled''',
-                where='''passed and compiled and not disabled''')
+        robots = db.select('robots',
+            what='''id, user_id, name, rating, automatch, last_opponent,
+                    priority, time, last_match, winrate, last_updated,
+                    disabled''',
+            where='''passed and compiled and not disabled''')
         all_bots = []
         for robot in robots:
             if robot.rating is not None:
@@ -134,7 +124,7 @@ def try_create_matches(db):
                 'rating': rating,
                 'automatch': robot.automatch,
                 'last_opponent': robot.last_opponent,
-                'priority': 1.0 if robot.user_id == 1 and robot.disabled else robot.priority,
+                'priority': robot.priority,
                 'time': robot.time,
                 'last_match': robot.last_match,
                 'winrate': robot.winrate,
@@ -280,7 +270,7 @@ def main():
     # Not necessary to be high priority
     os.nice(5)
 
-    print('\n\nwaiting for db to be ready.')
+    print('\n--------------\nwaiting for db to be ready.')
     db = dbcon.connect_db()
     # Wait for database to be ready.
     time.sleep(5)

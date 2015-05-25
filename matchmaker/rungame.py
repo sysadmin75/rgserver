@@ -13,7 +13,7 @@ import shorten
 import rgkit.game
 import tools
 
-S_MATCH_REST = 1.0
+S_MATCH_REST = 4.0
 
 TIME_RATE = 0.1
 WIN_RATE = 0.05
@@ -117,7 +117,6 @@ def update_stats(db, match, r1_time, r2_time, score):
 class ProxyDeadError(Exception): pass
 
 def run_game(db, match, output_file):
-    output_file.write('run_game_start\n')
     proxy_process1, proxy_process2 = None, None
     try:
         # TODO: Fix load_map, seriously.
@@ -185,12 +184,9 @@ def run_game(db, match, output_file):
 
         return score, r1_time, r2_time
     finally:
-        output_file.write('finally\n')
         if proxy_process1 is not None:
-            output_file.write('cleanin_1\n')
             proxy_process1.cleanup()
         if proxy_process2 is not None:
-            output_file.write('cleanin_2\n')
             proxy_process2.cleanup()
 
 
@@ -207,9 +203,7 @@ def run_match(db, match):
                 update_ratings(db, match, score)
                 update_stats(db, match, r1_time, r2_time, score)
         except Exception as e:
-            print('run_match_exception\n')
             traceback.print_exc(file=f)
-            print('run_match_trace_complete\n')
             db.update('matches', where='id=$id', state=ms.ERROR,
                       vars={'id': match['id']})
     sys.stdout = sys.__stdout__
