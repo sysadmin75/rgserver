@@ -9,7 +9,6 @@ import sys
 import time
 
 import dbcon
-import gamecron
 import matchstate as ms
 import rungame
 import tools
@@ -245,8 +244,7 @@ def sync_get_match(db, lock):
     return None
 
 
-def run_unranked_match(lock):
-    db = dbcon.connect_db()
+def run_unranked_match(db, lock):
     match = sync_get_match(db, lock)
     ret = 0
     if match:
@@ -260,8 +258,7 @@ def run_unranked_match(lock):
     return ret
 
 
-def run_ranked_match(match):
-    db = dbcon.connect_db()
+def run_ranked_match(db, match):
     ret = 0
     if match:
         rungame.run_match(db, match)
@@ -283,25 +280,27 @@ def main():
     # Not necessary to be high priority
     os.nice(5)
 
-    print('\nstarting matchmaker {0}'.format(datetime.datetime.today()))
+    print('\n\nwaiting for db to be ready.')
     db = dbcon.connect_db()
+    # Wait for database to be ready.
+    time.sleep(5)
     # Clean matches
     db.update('matches', where='state = %d' % ms.RUNNING, state=ms.WAITING)
     lock = multiprocessing.Manager().Lock()
 
+    print('starting matchmaker {0}'.format(datetime.datetime.today()))
     while True:
         r_time = 0
         u_time = 0
         r_count = 0
         u_count = 0
 
-        cron = gamecron.Scheduler()
         try_create_matches(db)
         ranked_matches = get_matches(db, ranked=True, limit=BATCH)
         n = 1
         for match in ranked_matches:
             lap()
-            u_count += cron.schedule(run_unranked_match, lock)
+            u_count += run_unranked_match(db, lock)
             u_time += lap()
             r1_rating = match.r1_rating or tools.DEFAULT_RATING
             r2_rating = match.r2_rating or tools.DEFAULT_RATING
@@ -310,7 +309,7 @@ def main():
                 match.id, match.seed, n))
             sys.stdout.flush()
             n += 1
-            r_count += cron.schedule(run_ranked_match, match)
+            r_count += run_ranked_match(db, match)
             r_time += lap()
 
         if r_count:
@@ -324,13 +323,12 @@ def main():
             sys.stdout.flush()
             time.sleep(PER_REST)
             lap()
-            u_count += cron.schedule(run_unranked_match, lock)
+            u_count += run_unranked_match(db, lock)
             u_time += lap()
         if u_count:
             print('U - avg {0:.3g}s {1} games in {2:.4g}s '.format(
                 u_time / u_count, u_count, u_time))
         print('rested for {0}s'.format(rested))
-        cron.wait()
 
 
 if __name__ == '__main__':
