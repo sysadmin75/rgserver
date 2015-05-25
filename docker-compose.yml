@@ -17,7 +17,7 @@ matchmaker:
     - matchlog:/var/log/robot/matches
   links:
     - db
-  command: './restart'
+  command: './matchmaker.py'
 webapp:
   build: webapp
   volumes:

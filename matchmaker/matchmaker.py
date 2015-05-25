@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''
 Run automatic and manual matches together, interleaved.
 '''
