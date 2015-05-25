@@ -274,10 +274,6 @@ def main():
     BATCH = 1000
     REST = 60
     PER_REST = 5
-    r_time = 0
-    u_time = 0
-    r_count = 0
-    u_count = 0
     def lap():
         global t
         e = time.time() - t
@@ -294,6 +290,11 @@ def main():
     lock = multiprocessing.Manager().Lock()
 
     while True:
+        r_time = 0
+        u_time = 0
+        r_count = 0
+        u_count = 0
+
         cron = gamecron.Scheduler()
         try_create_matches(db)
         ranked_matches = get_matches(db, ranked=True, limit=BATCH)
