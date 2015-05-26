@@ -25,11 +25,10 @@ webapp:
   links:
     - db
 server:
-  image: nginx:1.9
+  build: nginx
   volumes:
     - static:/usr/local/static
     - matchlog:/usr/local/matchlog
-    - nginx:/etc/nginx/conf.d
   ports:
     - "8000:80"
   links:
