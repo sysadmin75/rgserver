@@ -18,7 +18,7 @@ has started automatically.
 
 > Coming soon!
 
-## Updating
+## Upgrade
 
 1. [Sync](https://help.github.com/articles/syncing-a-fork/)
 2. `docker-compose stop`
