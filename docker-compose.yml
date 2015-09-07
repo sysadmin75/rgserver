@@ -1,11 +1,11 @@
 dbdata:
   image: postgres:9.4
-  command: true
+  command: /bin/true
 dbbackup:
-  image: alpine
+  image: alpine:3.2
   volumes_from:
     - dbdata
-  command: true
+  command: /bin/true
 db:
   build: postgres
   volumes_from:
@@ -13,22 +13,22 @@ db:
 matchmaker:
   build: matchmaker
   volumes:
-    - matchmaker:/usr/src/app
-    - matchlog:/var/log/robot/matches
+    - ./matchmaker:/usr/src/app
+    - ./matchlog:/var/log/robot/matches
   links:
     - db
   command: './matchmaker.py'
 webapp:
   build: webapp
   volumes:
-    - webapp:/usr/src/app
+    - ./webapp:/usr/src/app
   links:
     - db
 server:
   build: nginx
   volumes:
-    - static:/usr/local/static
-    - matchlog:/usr/local/matchlog
+    - ./static:/usr/local/static
+    - ./matchlog:/usr/local/matchlog
   ports:
     - "8000:80"
   links:
