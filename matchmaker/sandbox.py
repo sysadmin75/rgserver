@@ -12,10 +12,10 @@ import traceback
 
 from rgkit.settings import settings
 
-MAP_FILENAME = pkg_resources.resource_filename(
-    'rgkit', 'maps/default.py')
-def load_map(map_file):
-    map_data = ast.literal_eval(open(MAP_FILENAME).read())
+def load_map():
+    map_filename = pkg_resources.resource_filename(
+        'rgkit', 'maps/default.py')
+    map_data = ast.literal_eval(open(map_filename).read())
     settings.init_map(map_data)
 
 
@@ -98,7 +98,7 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
 
         for data in iter(queue_in.get, None):
             if 'query' in data:
-                load_map('rgkit/maps/default.py')
+                load_map()
                 mod = imp.new_module('usercode')
                 drop_privileges()
                 robot = make_user_robot(user_code, mod)
