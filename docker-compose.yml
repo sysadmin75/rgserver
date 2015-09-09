@@ -2,7 +2,7 @@ dbdata:
   image: postgres:9.4
   command: /bin/true
 dbbackup:
-  image: alpine:3.2
+  image: busybox
   volumes_from:
     - dbdata
   command: /bin/true
