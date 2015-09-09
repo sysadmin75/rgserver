@@ -87,8 +87,6 @@ class ProxyBot(object):
         self.turn = None
 
     def act(self, game):
-        global settings
-
         if self.skip:
             return ['suicide']
 
@@ -128,8 +126,6 @@ class ProxyBot(object):
 
 
 def make_player(user_code, output_file):
-    global settings
-
     robot = None
     proxy_proc = None
     try:

@@ -62,7 +62,7 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
             os.setgroups([])
             os.umask(0)
             os.setuid(uid)
-            os.nice(10)  # Lower priority
+            os.nice(5)  # Lower priority
 
             disable_modules(
                 'ctypes',
@@ -78,8 +78,6 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
             time.sleep = lambda s: 0
 
         def make_user_robot(code, mod):
-            global settings
-
             try:
                 exec code in mod.__dict__
             except:
@@ -96,11 +94,22 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
                     return bot
                 return None
 
+        out.write('Starting queue.\n')
         for data in iter(queue_in.get, None):
             if 'query' in data:
+                out.write('Starting query.\n')
                 load_map()
-                mod = imp.new_module('usercode')
+                out.write('Starting mod.\n')
+                try:
+                    mod = imp.new_module('usercode')
+                except Exception as e:
+                    out.write('exception.\n')
+                    out.write(str(e))
+                finally:
+                    out.write('finally.\n')
+                out.write('Dropping privileges.\n')
                 drop_privileges()
+                out.write('Making.\n')
                 robot = make_user_robot(user_code, mod)
                 queue_out.put({'result': 'ok'})
             else:

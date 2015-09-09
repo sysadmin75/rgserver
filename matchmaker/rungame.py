@@ -120,7 +120,7 @@ def run_game(db, match, output_file):
     proxy_process1, proxy_process2 = None, None
     try:
         # TODO: Fix load_map, seriously.
-        sandbox.load_map('rgkit/maps/default.py')
+        sandbox.load_map()
 
         output_file.write('---Starting Robot 1---\n')
         proxy_process1, p1 = proxy.make_player(match['r1_code'], output_file)
