@@ -271,10 +271,10 @@ def main():
     # Not necessary to be high priority
     os.nice(5)
 
-    print('\n--------------\nwaiting for db to be ready.')
+    print('\n--------------\nwaiting 15s for db to be ready.')
     db = dbcon.connect_db()
     # Wait for database to be ready.
-    time.sleep(5)
+    time.sleep(15)
     # Clean matches
     db.update('matches', where='state = %d' % ms.RUNNING, state=ms.WAITING)
     lock = multiprocessing.Manager().Lock()
