@@ -1,0 +1,35 @@
+dbdata:
+  image: postgres:9.4
+  command: /bin/true
+dbbackup:
+  image: busybox
+  volumes_from:
+    - dbdata
+  command: /bin/true
+db:
+  build: postgres
+  volumes_from:
+    - dbdata
+matchmaker:
+  build: matchmaker
+  volumes:
+    - ./matchmaker:/usr/src/app
+    - ./matchlog:/var/log/robot/matches
+  links:
+    - db
+  command: './matchmaker.py'
+webapp:
+  build: webapp
+  volumes:
+    - ./webapp:/usr/src/app
+  links:
+    - db
+server:
+  build: nginx
+  volumes:
+    - ./static:/usr/local/static
+    - ./matchlog:/usr/local/matchlog
+  ports:
+    - "8000:80"
+  links:
+    - webapp

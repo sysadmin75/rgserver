@@ -1,17 +1,12 @@
 import web
 
 params = {
-    'host': 'localhost',
+    'host': 'db',
     'dbn': 'postgres',
-    'db': 'DB_NAME',
-    'user': 'USER_NAME',
-    'pw': 'PASSWORD',
-    'pooling': False,
+    'db': 'robotgame',
+    'user': 'robot',
+    'pw': 'allthebots',
 }
-
-###########################################################
-# don't change below this line unless you know how it works
-###########################################################
 
 connection = None
 def connect_db():
@@ -19,7 +14,7 @@ def connect_db():
     global connection
     if connection is None:
         connection = web.database(**params)
-    connection.printing = False  # False by default
+        connection.printing = False  # False by default
     return connection
 
 def connect_fresh_db():

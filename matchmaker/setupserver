@@ -1,0 +1,4 @@
+#!/bin/bash
+#iptables -F
+iptables -D OUTPUT -o ethX -m owner --uid-owner nobody -j DROP
+iptables -A OUTPUT -o ethX -m owner --uid-owner nobody -j DROP
