@@ -1,0 +1,2 @@
+#!/bin/bash
+docker-compose run --entrypoint bash dbrun -c 'exec psql -h db -U "$POSTGRES_USER" -d robotgame'

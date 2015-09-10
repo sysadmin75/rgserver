@@ -3,18 +3,20 @@ dbdata:
   entrypoint: /bin/echo
   env_file: ./postgres/db.env
   image: postgres:9.4
-dbrun:
-  command: One-off database runner for rgserver
-  entrypoint: /bin/echo
-  env_file: ./postgres/db.env
-  image: postgres:9.4
-  volumes_from:
-    - dbdata
 db:
   env_file: ./postgres/db.env
   image: postgres:9.4
   volumes:
     - ./postgres/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+  volumes_from:
+    - dbdata
+dbrun:
+  command: One-off database runner for rgserver
+  entrypoint: /bin/echo
+  env_file: ./postgres/db.env
+  image: postgres:9.4
+  links:
+    - db
   volumes_from:
     - dbdata
 matchmaker:
