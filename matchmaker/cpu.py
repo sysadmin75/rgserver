@@ -10,7 +10,7 @@ class CPUTimeoutQueue(mpq.Queue):
     systems which support /proc/$pid/stat and only for local processes which
     don't fork and CPUs which keep their speed at the same level.
     """
-    MAX_RETRY = 1
+    MAX_RETRY = 3
     MIN_ERROR = 0.1
     ERROR_PERCENT = 1.1
     def __init__(self, *args, **kwargs):

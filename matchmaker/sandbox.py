@@ -21,7 +21,8 @@ def load_map():
 
 def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
     start_time = time.time()
-    queue_output.put('Starting {} at {}.\n'.format(os.getpid(), start_time))
+    pid = os.getpid()
+    queue_output.put('Starting {} at {}.\n'.format(pid, start_time))
 
     class Logger:
         def write(self, data):
@@ -55,7 +56,7 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
         # counting on iptables to restrict network access for `nobody`
         def drop_privileges(uid_name='nobody'):
             uid = pwd.getpwnam(uid_name).pw_uid
-            limit_resources()
+            #limit_resources()
 
             os.chroot('jail')
             os.chdir('jail')
@@ -100,13 +101,7 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
                 out.write('Starting query.\n')
                 load_map()
                 out.write('Starting mod.\n')
-                try:
-                    mod = imp.new_module('usercode')
-                except Exception as e:
-                    out.write('exception.\n')
-                    out.write(str(e))
-                finally:
-                    out.write('finally.\n')
+                mod = imp.new_module('usercode')
                 out.write('Dropping privileges.\n')
                 drop_privileges()
                 out.write('Making.\n')
