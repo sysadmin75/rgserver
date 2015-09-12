@@ -1,7 +1,6 @@
 dbdata:
   command: Data-only container for rgserver
   entrypoint: /bin/echo
-  env_file: ./postgres/db.env
   image: postgres:9.4
 db:
   env_file: ./postgres/db.env
@@ -17,8 +16,6 @@ dbrun:
   image: postgres:9.4
   links:
     - db
-  volumes_from:
-    - dbdata
 matchmaker:
   build: matchmaker
   links:
