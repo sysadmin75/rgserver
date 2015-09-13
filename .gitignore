@@ -1,3 +1,4 @@
 *.pyc
 webapp/session/*
+dbbackups/*
 matchlog/*
