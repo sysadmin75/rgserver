@@ -1,0 +1,45 @@
+dbdata:
+  command: Data-only container for rgserver
+  entrypoint: /bin/echo
+  image: postgres:9.4
+db:
+  environment:
+    - POSTGRES_USER=robot
+  image: postgres:9.4
+  volumes:
+    - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+  volumes_from:
+    - dbdata
+matchmaker:
+  build: matchmaker
+  links:
+    - db
+  volumes:
+    - ./matchlog:/var/log/robot/matches
+    - ./matchmaker:/usr/src/app
+webapp:
+  build: webapp
+  links:
+    - db
+  volumes:
+    - ./webapp:/usr/src/app
+server:
+  image: nginx:1.9
+  links:
+    - webapp
+  ports:
+    - "8000:80"
+  volumes:
+    - ./matchlog:/usr/local/matchlog
+    - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    - ./static:/usr/local/static
+run:
+  command: One-off runner for rgserver
+  entrypoint: /bin/echo
+  image: postgres:9.4
+  links:
+    - db
+  volumes:
+    - ./matchlog:/matchlog
+    - ./dbbackups:/dbbackups
+    - ./sql:/sql

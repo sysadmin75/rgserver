@@ -1,14 +1,4 @@
 *.pyc
-
-private/*
-tmp/*
-!tmp/README
-sessions/*
-!sessions/README
+webapp/session/*
 dbbackups/*
-!dbbackups/README
-uwsgi/*
-!uwsgi/README
-.vagrant/*
-
-/dbcon.py
+matchlog/*

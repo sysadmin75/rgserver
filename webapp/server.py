@@ -109,7 +109,7 @@ app = web.application(urls, globals())
 
 def debuggable_session(app):
     if web.config.get('_sess') is None:
-        sess = web.session.Session(app, web.session.DiskStore('sessions'))
+        sess = web.session.Session(app, web.session.DiskStore('session'))
         web.config._sess = sess
         return sess
     return web.config._sess
@@ -199,7 +199,7 @@ def template_closure(directory):
         return getattr(templates, name)(*params, **kwargs)
     return render
 
-tpl = template_closure('t/')
+tpl = template_closure('template/')
 
 def ltpl(*params, **kwargs):
     return tpl('layout', tpl(*params, **kwargs))
