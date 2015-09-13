@@ -95,16 +95,11 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
                     return bot
                 return None
 
-        out.write('Starting queue.\n')
         for data in iter(queue_in.get, None):
             if 'query' in data:
-                out.write('Starting query.\n')
                 load_map()
-                out.write('Starting mod.\n')
                 mod = imp.new_module('usercode')
-                out.write('Dropping privileges.\n')
                 drop_privileges()
-                out.write('Making.\n')
                 robot = make_user_robot(user_code, mod)
                 queue_out.put({'result': 'ok'})
             else:
