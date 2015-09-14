@@ -193,7 +193,7 @@ def run_game(db, match, output_file):
 def run_match(db, match):
     sys.stdout.flush()
     sys.stderr.flush()
-    with open('/var/log/robot/matches/%d' % match['id'], 'w+') as f:
+    with open('/matchlog/%d' % match['id'], 'w+') as f:
         try:
             sys.stdout = sys.stderr = f
             db.update('matches', where='id=$id', vars={'id': match['id']},
