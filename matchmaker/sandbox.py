@@ -12,6 +12,7 @@ import traceback
 
 from rgkit.settings import settings
 
+
 def load_map():
     map_filename = pkg_resources.resource_filename(
         'rgkit', 'maps/default.py')
@@ -25,8 +26,10 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
     queue_output.put('Starting {} at {}.\n'.format(pid, start_time))
 
     class Logger:
+
         def write(self, data):
             queue_output.put(data)
+
         def flush(self):
             pass
 
@@ -36,9 +39,14 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
     exit_func = os._exit
     try:
         def limit_resources():
-            MEM_LIMIT = (2 ** 20) * 1024 # MB
+            MEM_LIMIT = (2 ** 20) * 1024  # MB
             for rsrc in ('DATA', 'RSS', 'AS'):
-                resource.setrlimit(getattr(resource, 'RLIMIT_' + rsrc), (MEM_LIMIT, MEM_LIMIT))
+                resource.setrlimit(
+                    getattr(
+                        resource,
+                        'RLIMIT_' + rsrc),
+                    (MEM_LIMIT,
+                     MEM_LIMIT))
             resource.setrlimit(resource.RLIMIT_NPROC, (10, 10))
 
         def disable_modules(*blacklist):
@@ -56,7 +64,7 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
         # counting on iptables to restrict network access for `nobody`
         def drop_privileges(uid_name='nobody'):
             uid = pwd.getpwnam(uid_name).pw_uid
-            #limit_resources()
+            # limit_resources()
 
             os.chroot('jail')
             os.chdir('jail')
@@ -91,7 +99,8 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
                     bot = mod.__dict__['Robot']()
                     ini_time = time.time()
                     out.write(
-                        'Initialization: {0:.4g}s\n'.format(ini_time - cmp_time))
+                        'Initialization: {0:.4g}s\n'.format(
+                            ini_time - cmp_time))
                     return bot
                 return None
 

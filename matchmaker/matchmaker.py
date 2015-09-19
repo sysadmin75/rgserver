@@ -28,16 +28,15 @@ def try_create_matches(db):
         matches = []
         matched = set()
         # Filter out lower pri bots
-        #print 'num bots before {0}'.format(len(bots))
-        #bots = [bot for bot in bots if random.random() < bot['priority']]
-        #print 'num bots after  {0}'.format(len(bots))
+        # print 'num bots before {0}'.format(len(bots))
+        # bots = [bot for bot in bots if random.random() < bot['priority']]
+        # print 'num bots after  {0}'.format(len(bots))
         random.shuffle(bots)
-        #half = len(bots) / 2
+        # half = len(bots) / 2
         estimate = 0
         for bot in bots:
             if bot['last_match'] is None:
                 continue
-            elapsed = time.time() - bot['last_match']
             updated = time.time() - bot['last_updated']
             # number 1 bot by definition has a high win rate, should not have
             # bonus based on it.
@@ -48,24 +47,24 @@ def try_create_matches(db):
             bot['priority'] = max(0.0, min(1.0, pri))
         for bot in bots:
             # Match half of everyone at least
-            #half -= 1
-            #if ((bot['automatch'] or random.random() < bot['priority'])
+            # half -= 1
+            # if ((bot['automatch'] or random.random() < bot['priority'])
             # Match everyone
-            #if bot['id'] not in matched:
-            if (random.random() < bot['priority']
-                and bot['id'] not in matched):
+            # if bot['id'] not in matched:
+            if (random.random() < bot['priority'] and
+                    bot['id'] not in matched):
                 rating1 = bot['rating']
+
                 def match_prob(rating2):
-                    return E**(-((rating1-rating2)/RATING_RANGE)**2)
+                    return E ** (-((rating1 - rating2) / RATING_RANGE) ** 2)
                 prob_dist = {}
                 num = 0
                 total = 0.0
                 for obot in bots:
                     # Only match unmatched bots and not last matched opponents
-                    if (obot != bot
-                            and obot['id'] not in matched
-                            and obot['id'] != bot['last_opponent']
-                            and obot['last_opponent'] != bot['id']):
+                    if (obot != bot and obot['id'] not in matched and
+                            obot['id'] != bot['last_opponent'] and
+                            obot['last_opponent'] != bot['id']):
                         p = match_prob(obot['rating']) * obot['priority']
                         num += 1
                     else:
@@ -86,7 +85,8 @@ def try_create_matches(db):
                 if MATCHED_SKIP:
                     matched.add(bot['id'])
                     matched.add(opp['id'])
-                #print 'matched {0:.5g} {1:.5g}'.format(bot['rating'], opp['rating'])
+                # print 'matched {0:.5g} {1:.5g}'.format(bot['rating'],
+                # opp['rating'])
                 matches.append((bot, opp))
                 estimate += bot['time'] + opp['time'] + rungame.S_MATCH_REST
         matched_ids = []
@@ -97,21 +97,23 @@ def try_create_matches(db):
                       priority=0)
         db.query('''UPDATE robots SET priority=priority+$p
                     WHERE compiled and passed and not disabled''',
-                    vars={'p': M_INC})
+                 vars={'p': M_INC})
         print('Estimated ranked time: {0}s'.format(round(estimate, 3)))
-        #matches.sort(key=lambda (a, b): a['rating'] + b['rating'])
+        # matches.sort(key=lambda (a, b): a['rating'] + b['rating'])
         random.shuffle(matches)
         return matches
 
     def get_ready_robots():
-        avg_rating = db.select('robots', what='AVG(rating)',
-                where='passed and compiled and not disabled')[0]['avg']
+        avg_rating = db.select(
+            'robots',
+            what='AVG(rating)',
+            where='passed and compiled and not disabled')[0]['avg']
         print('Avg rating: {}'.format(avg_rating))
         robots = db.select('robots',
-            what='''id, user_id, name, rating, automatch, last_opponent,
+                           what='''id, user_id, name, rating, automatch, last_opponent,
                     priority, time, last_match, winrate, last_updated,
                     disabled''',
-            where='''passed and compiled and not disabled''')
+                           where='''passed and compiled and not disabled''')
         all_bots = []
         for robot in robots:
             if robot.rating is not None:
@@ -134,7 +136,8 @@ def try_create_matches(db):
         return all_bots
 
     def num_automatch_robots():
-        result = db.select('robots',
+        result = db.select(
+            'robots',
             what='count(*)',
             where=('automatch and passed and compiled and not disabled'))
         if not result:
@@ -143,16 +146,16 @@ def try_create_matches(db):
 
     def num_matches_to_run():
         result = db.select('matches',
-            where='state = %d and ranked' % ms.WAITING,
-            what='count(*)')
+                           where='state = %d and ranked' % ms.WAITING,
+                           what='count(*)')
         if not result:
             return 0
         return result[0]['count']
 
     def last_ranked_timestamp():
         result = db.select('matches',
-            where='state = %d and ranked' % ms.DONE,
-            what='timestamp', order='timestamp desc', limit=1)
+                           where='state = %d and ranked' % ms.DONE,
+                           what='timestamp', order='timestamp desc', limit=1)
         if not result:
             return 0
         return result[0]['timestamp']
@@ -160,6 +163,7 @@ def try_create_matches(db):
     def create_matches(pairs):
         seed = random.randint(1, settings.max_seed)
         to_insert = []
+
         def insert(r1, r2):
             to_insert.append({
                 'r1_id': r1['id'],
@@ -168,7 +172,7 @@ def try_create_matches(db):
                 'r1_rating': r1['rating'],
                 'r2_rating': r2['rating'],
                 'seed': seed,
-                'k_factor': 0.0, # TBD
+                'k_factor': 0.0,  # TBD
             })
             if len(to_insert) >= INSERT_BATCH:
                 num = len(db.multiple_insert('matches', to_insert))
@@ -189,19 +193,16 @@ def try_create_matches(db):
 
     num = num_matches_to_run()
     num_robots = num_automatch_robots()
-    last_ranked = last_ranked_timestamp()
     if num > 0:
         print('still {0} matches to run for {1} automatch robots'.format(
             num, num_robots))
     else:
-        cur_time = int(time.time())
-
         robots = get_ready_robots()
         pairs = match_robots(robots)
-        print 'generated %d matches' % len(pairs)
+        print('generated %d matches' % len(pairs))
 
         num_inserted = create_matches(pairs)
-        print 'inserted {0} matches'.format(num_inserted)
+        print('inserted {0} matches'.format(num_inserted))
 
 
 def get_matches(db, ranked=True, limit=1):
@@ -258,10 +259,13 @@ def run_ranked_match(db, match):
 
 
 t = 0
+
+
 def main():
     BATCH = 1000
     REST = 60
     PER_REST = 5
+
     def lap():
         global t
         e = time.time() - t
@@ -295,9 +299,10 @@ def main():
             u_time += lap()
             r1_rating = match.r1_rating or tools.DEFAULT_RATING
             r2_rating = match.r2_rating or tools.DEFAULT_RATING
-            print('{6:2} ranked {0:5}({1:.5g}) v {2:5}({3:.5g}) : m {4} s {5}'.format(
-                match.r1_id, r1_rating, match.r2_id, r2_rating,
-                match.id, match.seed, n))
+            print('{6:2} ranked {0:5}({1:.5g}) v {2:5}({3:.5g}) : '
+                  'm {4} s {5}'.format(
+                      match.r1_id, r1_rating, match.r2_id, r2_rating,
+                      match.id, match.seed, n))
             sys.stdout.flush()
             n += 1
             r_count += run_ranked_match(db, match)

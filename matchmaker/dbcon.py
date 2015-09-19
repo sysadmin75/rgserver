@@ -9,6 +9,8 @@ params = {
 }
 
 connection = None
+
+
 def connect_db():
     global params
     global connection
@@ -16,6 +18,7 @@ def connect_db():
         connection = web.database(**params)
         connection.printing = False  # False by default
     return connection
+
 
 def connect_fresh_db():
     global params

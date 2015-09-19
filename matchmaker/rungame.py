@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import os
 import sys
-import random
 import traceback
 import time
 ###
@@ -39,8 +38,8 @@ def update_ratings(db, match, game_result):
     MINUTE = 60
     HOUR = 60 * MINUTE
     DAY = 24 * HOUR
-    WEEK = 7 * DAY
-    MONTH = 30 * DAY
+    # WEEK = 7 * DAY
+    # MONTH = 30 * DAY
 
     def get_k_factor(r1_rating, r2_rating, r1_update, r2_update):
         k_factor = min(tools.get_k_factor(r1_rating),
@@ -55,11 +54,16 @@ def update_ratings(db, match, game_result):
         return k_factor
 
     def new_rating(r1, r2, result, k_factor):
-        expected = 1.0/(1 + pow(10.0, (r2 - r1)/400.0))
+        expected = 1.0 / (1 + pow(10.0, (r2 - r1) / 400.0))
         return r1 + k_factor * (result - expected)
 
     def get_rating_and_update_time(rid):
-        result = db.select('robots', what='rating, last_updated', where='id=$id', vars={'id': rid})
+        result = db.select(
+            'robots',
+            what='rating, last_updated',
+            where='id=$id',
+            vars={
+                'id': rid})
         if not result:
             return None, None
         robot = result[0]
@@ -114,7 +118,10 @@ def update_stats(db, match, r1_time, r2_time, score):
     db.query('UPDATE robots SET winrate=winrate*(1-$r) + $t*$r WHERE id=$id',
              vars={'id': match['r2_id'], 'r': WIN_RATE, 't': 1 - score})
 
-class ProxyDeadError(Exception): pass
+
+class ProxyDeadError(Exception):
+    pass
+
 
 def run_game(db, match, output_file):
     proxy_process1, proxy_process2 = None, None
@@ -136,18 +143,19 @@ def run_game(db, match, output_file):
                       where='id=$id', vars={'id': match['r2_id']})
             raise Exception('Robot 2 not able to be instantiated.')
 
-        if not (proxy_process1 is not None
-                and proxy_process2 is not None
-                and proxy_process1.alive()
-                and proxy_process2.alive()):
+        if not (proxy_process1 is not None and proxy_process2 is not None and
+                proxy_process1.alive() and proxy_process2.alive()):
             raise ProxyDeadError('the process is dead')
-        g = rgkit.game.Game([p1, p2], record_actions=False, record_history=True,
-                      print_info=True, seed=match['seed'], symmetric=SYMMETRIC)
+        g = rgkit.game.Game([p1,
+                             p2],
+                            record_actions=False,
+                            record_history=True,
+                            print_info=True,
+                            seed=match['seed'],
+                            symmetric=SYMMETRIC)
         g.run_all_turns()
-        if not (proxy_process1 is not None
-                and proxy_process2 is not None
-                and proxy_process1.alive()
-                and proxy_process2.alive()):
+        if not (proxy_process1 is not None and proxy_process2 is not None and
+                proxy_process1.alive() and proxy_process2.alive()):
             raise ProxyDeadError('the process is dead')
 
         game_scores = g.get_scores()
@@ -164,7 +172,7 @@ def run_game(db, match, output_file):
             r1_time = get_cpu_time(proxy_process1.pid)
             r2_time = get_cpu_time(proxy_process2.pid)
             output_file.write('R1: {0}\nR2: {1}\n'.format(r1_time, r2_time))
-        except Exception as e:
+        except Exception:
             traceback.print_exc(file=output_file)
 
         # turn off printing here because the output for data is huge
@@ -202,7 +210,7 @@ def run_match(db, match):
             if match['ranked']:
                 update_ratings(db, match, score)
                 update_stats(db, match, r1_time, r2_time, score)
-        except Exception as e:
+        except Exception:
             traceback.print_exc(file=f)
             db.update('matches', where='id=$id', state=ms.ERROR,
                       vars={'id': match['id']})
@@ -232,4 +240,3 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         match = get_match(db, int(sys.argv[1]))
         run_game(db, match, sys.stdout)
-

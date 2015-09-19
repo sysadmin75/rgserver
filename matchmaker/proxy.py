@@ -1,6 +1,5 @@
 import multiprocessing as mp
 import multiprocessing.queues as mpq
-import os
 import sys
 import traceback
 
@@ -20,18 +19,24 @@ MAX_MS_PER_ACT = 1000
 MAX_MS_PER_CALL = 2000
 
 
-class TimeoutError(Exception): pass
-class TimeoutCannotRecoverError(Exception): pass
+class TimeoutError(Exception):
+    pass
+
+
+class TimeoutCannotRecoverError(Exception):
+    pass
 
 
 class ProxyProcess(object):
+
     def __init__(self, user_code):
         self._queue_data = mp.Queue()
         self._queue_action = cpu.CPUTimeoutQueue()
         self._queue_output = mp.Queue()
 
-        self.process = mp.Process(target=sandbox.proxy_process_routine,
-            args=(user_code, self._queue_data, self._queue_action, self._queue_output))
+        self.process = mp.Process(target=sandbox.proxy_process_routine, args=(
+            user_code, self._queue_data, self._queue_action,
+            self._queue_output))
         self.process.daemon = True
         self.process.start()
         self._queue_action.set_pid(self.process.pid)
@@ -79,6 +84,7 @@ class ProxyProcess(object):
 
 
 class ProxyBot(object):
+
     def __init__(self, process, output_file):
         self._process = process
         self._output_file = output_file
@@ -135,7 +141,7 @@ def make_player(user_code, output_file):
             robot = ProxyBot(proxy_proc, output_file)
         else:
             output_file.write(str(result))
-    except Exception as e:
+    except Exception:
         if proxy_proc is not None:
             output_file.write(proxy_proc.get_output())
         traceback.print_exc(file=output_file)

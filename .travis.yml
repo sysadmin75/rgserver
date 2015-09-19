@@ -1,0 +1,16 @@
+sudo: false
+language: python
+python:
+  - "2.7"
+install:
+  - "pip install flake8"
+script:
+  - flake8 webapp matchmaker
+notifications:
+  email: false
+  irc:
+    channels:
+      - "chat.freenode.net#robotgame"
+    use_notice: true
+    on_success: change
+    on_failure: always

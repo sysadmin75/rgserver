@@ -1,40 +1,48 @@
 import bleach
 import hashlib
 import markdown
-import math
 import tools
 
 from datetime import datetime
 
 ADMINS = (
-    1, # bh (hehe, just use one account to be safe
+    1,  # bh (hehe, just use one account to be safe
 )
 MODERATORS = (
-    7392, # WhiteHalmos
-    1, # bh
-    2840 # aurick
+    7392,  # WhiteHalmos
+    1,  # bh
+    2840  # aurick
 )
 USER_SALT = 'bbiuyxzoswekl;jgtohgoaboih'
 
+
 def is_mod(sess):
     return 'logged_in' in sess and sess.user_id in MODERATORS
+
+
 def is_admin(sess):
     return 'logged_in' in sess and sess.user_id in ADMINS
+
+
 def is_logged_in(sess):
     return 'logged_in' in sess and sess.logged_in
+
 
 def get_pref(pref, sess):
     if pref in sess:
         return sess[pref]
     return None
 
+
 def clean(message):
     if not message:
         return ''
     return message.strip().lower()
 
+
 def msghash(message):
     return hashlib.sha256(clean(message.encode('utf-8'))).hexdigest()
+
 
 def time_ago(timestamp):
     diff = datetime.now() - datetime.fromtimestamp(timestamp)
@@ -58,18 +66,21 @@ def time_ago(timestamp):
         return '%dyr ago' % (day_diff / 365)
     return 'long ago'
 
+
 def timedelta_ago(timestamp):
     return datetime.now() - datetime.fromtimestamp(timestamp)
+
 
 def rounded(num, digits=None):
     if digits is None:
         return int(round(num))
     return round(num, digits)
 
+
 def dec(rating):
     result = ''
     clr = 'red'
-    if isinstance(rating, basestring):
+    if isinstance(rating, str):
         return rating
     elif rating >= 3600:
         result = '''
@@ -105,13 +116,15 @@ def dec(rating):
         result = '''
             <i class="fa fa-stack rating-container">
                 <i class="fa fa-circle-thin fa-stack-1x rating-front"></i>
-                <i class="fa fa-circle fa-stack-1x rating-middle rating-i rating-white"
+                <i class="fa fa-circle fa-stack-1x
+                          rating-middle rating-i rating-white"
                    style="height: {0}"></i>
                 <i class="fa fa-circle fa-stack-1x rating-back"></i>
             </i>{{0}}'''.format(n)
     frating = '<strong>{0}</strong>'.format(rating)
     return '<span class="rating-{0}">{1}</span>'.format(
         clr, result.format(frating))
+
 
 def rating_string(rating, decimal=False, ranking=None):
     if rating is None:
@@ -124,11 +137,14 @@ def rating_string(rating, decimal=False, ranking=None):
         return '{0} Rank: {1}'.format(rounded, ranking + 1)
     return rounded
 
+
 def drating(*args, **kwargs):
     return dec(rating(*args, **kwargs))
 
+
 def rating(robot, decimal=False):
     return rating_string(robot.rating, decimal)
+
 
 def rating_diff(robot):
     if robot.rating is None:
@@ -137,6 +153,7 @@ def rating_diff(robot):
         rating = robot.rating
     last_rating = robot.last_rating
     return round(rating - last_rating, 1)
+
 
 def rating_diff_class(robot):
     diff = rating_diff(robot)
@@ -157,14 +174,17 @@ def rating_diff_class(robot):
             return classes[i] + ' red'
     return ''
 
+
 def match_rating(match, rid, other=False, decimal=False):
     if (match.r1_id == rid) ^ other:
         return rating_string(match.r1_rating, decimal, match.r1_ranking)
     return rating_string(match.r2_rating, decimal, match.r2_ranking)
 
+
 def new_rating(r1, r2, result, k_factor):
-    expected = 1.0/(1 + pow(10, (r2 - r1)/400.0))
+    expected = 1.0 / (1 + pow(10, (r2 - r1) / 400.0))
     return r1 + k_factor * (result - expected)
+
 
 def get_rating_diff(rating1, rating2, score1, score2, k_factor=32.0):
     if score1 == score2:
@@ -174,6 +194,7 @@ def get_rating_diff(rating1, rating2, score1, score2, k_factor=32.0):
     else:
         score = 0
     return new_rating(rating1, rating2, score, k_factor) - rating1
+
 
 def rating_change(match, rid, other=False):
     if (match.r1_id == rid) ^ other:
@@ -186,8 +207,9 @@ def rating_change(match, rid, other=False):
                                match.k_factor)
     return round(diff, 1)
 
+
 def safe_markdown(string):
     string = bleach.clean(string)
     string = markdown.markdown(string)
     others = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-    return bleach.clean(string, tags=bleach.ALLOWED_TAGS+others)
+    return bleach.clean(string, tags=bleach.ALLOWED_TAGS + others)

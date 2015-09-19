@@ -1,9 +1,10 @@
 import signal
 from contextlib import contextmanager
-import time
-import sys
 
-class ProcessTimeoutError(Exception): pass
+
+class ProcessTimeoutError(Exception):
+    pass
+
 
 @contextmanager
 def time_limit(seconds):
