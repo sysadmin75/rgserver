@@ -25,10 +25,17 @@ import pygments.formatters
 
 import dbcon
 import matchstate as ms
+import rgkit.gamestate
 import shorten
 import tools
 import tplib
 from rgkit.settings import settings
+
+# TODO: Remove these dependencies.
+import pkg_resources
+map_data = ast.literal_eval(
+    open(pkg_resources.resource_filename('rgkit', 'maps/default.py')).read())
+settings.init_map(map_data)
 
 web.config.debug = False
 
@@ -54,6 +61,7 @@ urls = (
     '/api/robot/stats', 'PageRobotStats',
     '/api/match/history', 'PageMatchData',
     '/api/match/(\d*)', 'PageMatchData',
+    '/api/match/run', 'PageMatchRun',
 
     # pages
     '/', 'PageHome',
@@ -1190,6 +1198,18 @@ class PageMatchData:
                 })
             match.data = get_match_data(mid)
             return json.dumps(match)
+
+
+class PageMatchRun:
+    def POST(self):
+        data = json.loads(web.data())
+        game_data = data['game']
+        action_data = data['actions']
+        state = rgkit.gamestate.GameState.create_from_json(game_data)
+        moves = rgkit.gamestate.GameState.create_actions_from_json(action_data)
+        new_state = state.apply_actions(moves)
+        info = new_state.get_game_info(json=True, seed=True)
+        return json.dumps(info)
 
 
 DEFAULT_PERIOD = tools.MONTH

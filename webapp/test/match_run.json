@@ -1,0 +1,30 @@
+{
+    "game": {
+        "seed": "0",
+        "turn": "10",
+        "robots": [
+            {
+                "location": ["10", "12"],
+                "hp": "50",
+                "player_id": "0",
+                "robot_id": "5"
+            },
+            {
+                "location": ["10", "10"],
+                "hp": "50",
+                "player_id": "1",
+                "robot_id": "6"
+            }
+        ]
+    },
+    "actions": [
+        {
+            "location": ["10", "12"],
+            "action": ["move", ["10", "11"]]
+        },
+        {
+            "location": ["10", "10"],
+            "action": ["attack", ["10", "11"]]
+        }
+    ]
+}
