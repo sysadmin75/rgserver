@@ -1,4 +1,4 @@
-[Robot Game](http://robotgame.net) server code
+[Robot Game](http://robotgame.net) server code [![Build Status](https://travis-ci.org/RobotGame/rgserver.svg?branch=master)](https://travis-ci.org/RobotGame/rgserver)
 ===================================
 
 ## Setup

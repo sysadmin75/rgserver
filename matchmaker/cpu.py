@@ -13,17 +13,21 @@ class CPUTimeoutQueue(mpq.Queue):
     MAX_RETRY = 3
     MIN_ERROR = 0.1
     ERROR_PERCENT = 1.1
+
     def __init__(self, *args, **kwargs):
         self.clk_tck = float(os.sysconf(os.sysconf_names['SC_CLK_TCK']))
         super(CPUTimeoutQueue, self).__init__(*args, **kwargs)
+
     def set_pid(self, pid):
         self.pid = pid
+
     def _get_raw_cpu_time(self):
         with open("/proc/%d/stat" % (self.pid,)) as fpath:
             vals = fpath.read().split(' ')
             time = sum(
                 int(f) / self.clk_tck for f in vals[13:15])
             return time
+
     def get(self, block=True, timeout=None):
         assert block and timeout is not None, (
             '%s.get() may only be used with block=True and a timeout!'.format(
@@ -47,7 +51,7 @@ class CPUTimeoutQueue(mpq.Queue):
                 if current_timeout < 0:
                     attempt_limit = self.MAX_RETRY
                 print('#timeout was supposed to be', timeout,
-                    ', but CPU time was', post_used_time - pre_used_time,
-                    'while the real time was', time.time() - pre_real_time)
+                      ', but CPU time was', post_used_time - pre_used_time,
+                      'while the real time was', time.time() - pre_real_time)
                 attempt_limit += 1
         raise mpq.Empty()

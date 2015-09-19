@@ -4,17 +4,10 @@ import ast
 import difflib
 import hashlib
 import json
-import math
-import os
-import py_compile
 import random
-import re
 import string
 import subprocess
-import sys
 import time
-import urllib
-import urlparse
 
 import web
 import web.form
@@ -25,10 +18,17 @@ import pygments.formatters
 
 import dbcon
 import matchstate as ms
+import rgkit.gamestate
 import shorten
 import tools
 import tplib
 from rgkit.settings import settings
+
+# TODO: Remove these dependencies.
+import pkg_resources
+map_data = ast.literal_eval(
+    open(pkg_resources.resource_filename('rgkit', 'maps/default.py')).read())
+settings.init_map(map_data)
 
 web.config.debug = False
 
@@ -54,6 +54,7 @@ urls = (
     '/api/robot/stats', 'PageRobotStats',
     '/api/match/history', 'PageMatchData',
     '/api/match/(\d*)', 'PageMatchData',
+    '/api/match/run', 'PageMatchRun',
 
     # pages
     '/', 'PageHome',
@@ -107,6 +108,7 @@ urls = (
 
 app = web.application(urls, globals())
 
+
 def debuggable_session(app):
     if web.config.get('_sess') is None:
         sess = web.session.Session(app, web.session.DiskStore('session'))
@@ -116,13 +118,16 @@ def debuggable_session(app):
 
 sess = debuggable_session(app)
 
+
 def hash(data):
     return hashlib.sha1(data).hexdigest()
+
 
 def generate_salt(length=10):
     random.seed()
     pool = string.ascii_uppercase + string.ascii_lowercase + string.digits
     return ''.join(random.choice(pool) for i in range(length))
+
 
 def logged_in(sess):
     if 'logged_in' in sess:
@@ -136,6 +141,7 @@ def logged_in(sess):
             return sess.user_id
     return False
 
+
 def force_login(sess, page='/reg', check_logged_in=False):
     user_id = logged_in(sess)
     if check_logged_in:
@@ -148,24 +154,34 @@ def force_login(sess, page='/reg', check_logged_in=False):
             raise web.seeother(page)
     return user_id
 
+
 def username_exists(username):
     result = db.select('users',
-        what='1',
-        where='username=$username',
-        vars={'username': username},
-        limit=1)
+                       what='1',
+                       where='username=$username',
+                       vars={'username': username},
+                       limit=1)
     return bool(result)
+
 
 def create_user(username, password, **params):
     pw_hash = hash(password)
     pw_salt = generate_salt()
-    pw_hash = hash(pw_hash+pw_salt)
+    pw_hash = hash(pw_hash + pw_salt)
 
-    return db.insert('users', username=username, pw_hash=pw_hash, pw_salt=pw_salt, **params)
+    return db.insert(
+        'users',
+        username=username,
+        pw_hash=pw_hash,
+        pw_salt=pw_salt,
+        **params)
+
 
 def authenticate_user(username, password):
-    users = db.select('users', where='username = $username', vars={'username': username},
-    what='id, pw_hash, pw_salt')
+    users = db.select('users',
+                      where='username = $username',
+                      vars={'username': username},
+                      what='id, pw_hash, pw_salt')
     if not users:
         return False
 
@@ -173,6 +189,7 @@ def authenticate_user(username, password):
     if hash(hash(password) + user['pw_salt']) == user['pw_hash']:
         return user['id']
     return False
+
 
 def login_user(sess, user_id):
     if logged_in(sess):
@@ -182,8 +199,10 @@ def login_user(sess, user_id):
     sess.user_id = user_id
     return True
 
+
 def logout_user(sess):
     sess.kill()
+
 
 def template_closure(directory):
     global settings
@@ -195,14 +214,17 @@ def template_closure(directory):
             'tplib': tplib,
         },
     )
+
     def render(name, *params, **kwargs):
         return getattr(templates, name)(*params, **kwargs)
     return render
 
 tpl = template_closure('template/')
 
+
 def ltpl(*params, **kwargs):
     return tpl('layout', tpl(*params, **kwargs))
+
 
 def lmsg(msg):
     return tpl('layout', '<div class="prose">{0}</div>'.format(msg))
@@ -249,13 +271,16 @@ def get_last_matches(num, min_rating=None):
     matches = db.query(query, vars={'num': num, 'r': min_rating})
     return matches if matches else None
 
+
 def get_latest_match(min_rating=None):
     matches = get_last_matches(1, min_rating)
     if matches:
         return matches[0]
     return None
 
+
 class PageHome:
+
     def GET(self):
         if logged_in(sess):
             return ltpl('home')
@@ -265,6 +290,7 @@ class PageHome:
             match.data = get_match_data(match['id'])
         recent = get_last_matches(5, rating)
         return ltpl('home', match, recent)
+
 
 class PageLogin:
     _form = web.form.Form(
@@ -292,6 +318,7 @@ class PageLogin:
 
         login_user(sess, user_id)
         raise web.seeother('/robots')
+
 
 class PageRegister:
     _form = web.form.Form(
@@ -323,12 +350,16 @@ class PageRegister:
         login_user(sess, user_id)
         raise web.seeother('/robot/new')
 
+
 class PageLogout:
+
     def GET(self):
         logout_user(sess)
         raise web.seeother('/')
 
+
 class PageRobots:
+
     def GET(self):
         force_login(sess)
         query = '''
@@ -345,11 +376,13 @@ class PageRobots:
             query, vars={'user_id': sess.user_id, 'disabled': True})
         return ltpl('robots', robots, disabled_robots)
 
+
 def check_name(s):
     for ch in s:
         if ch in string.printable and ch not in string.whitespace:
             return True
     return False
+
 
 def count_robots(user_id):
     result = db.select(
@@ -357,6 +390,7 @@ def count_robots(user_id):
         where='user_id=$user_id and not disabled',
         vars={'user_id': user_id})
     return result[0]['count'] if result else None
+
 
 class PageNewRobot:
     _form = web.form.Form(
@@ -367,18 +401,21 @@ class PageNewRobot:
 
         robot_count = count_robots(sess.user_id)
         user = db.select('users', what='extra_bots', where='id=$id',
-                vars={'id': sess.user_id})
+                         vars={'id': sess.user_id})
         robot_limit = ROBOTS_LIMITS
         if user:
             robot_limit += user[0]['extra_bots']
         if robot_count >= robot_limit:
             return lmsg(BOT_LIMIT_REACHED_MSG.format(robot_limit))
 
-        top_robots = list(db.select('robots',
-            what='id, name, rating, open_source',
-            where='compiled and passed and not disabled and rating is not NULL',
-            order='rating desc',
-            limit=6))
+        top_robots = list(
+            db.select(
+                'robots',
+                what='id, name, rating, open_source',
+                where='compiled and passed and not disabled and '
+                      'rating is not NULL',
+                order='rating desc',
+                limit=6))
 
         return ltpl('newrobot', bool(new_acc), top_robots)
 
@@ -387,7 +424,7 @@ class PageNewRobot:
 
         robot_count = count_robots(sess.user_id)
         user = db.select('users', what='extra_bots', where='id=$id',
-                vars={'id': sess.user_id})
+                         vars={'id': sess.user_id})
         robot_limit = ROBOTS_LIMITS
         if user:
             robot_limit += user[0]['extra_bots']
@@ -402,7 +439,9 @@ class PageNewRobot:
         if not form.d.name:
             return lmsg('You have to enter a name.')
         if not check_name(form.d.name):
-            return lmsg('Please have at least one printable, non-whitespace ASCII character in your name.')
+            return lmsg(
+                'Please have at least one printable, non-whitespace ASCII '
+                'character in your name.')
 
         if len(form.d.name) > MAX_NAME_LENGTH:
             return lmsg(
@@ -417,10 +456,11 @@ class Robot:
         pass'''
 
         rid = db.insert('robots',
-            user_id=sess.user_id,
-            name=form.d.name,
-            code=code)
+                        user_id=sess.user_id,
+                        name=form.d.name,
+                        code=code)
         raise web.seeother('/robot/{0}/edit'.format(rid))
+
 
 def get_robot(rid, check_user_id=True):
     where = 'id=$id'
@@ -433,7 +473,9 @@ def get_robot(rid, check_user_id=True):
     result = db.select('robots', where=where, vars=vars)
     return result[0] if result else None
 
+
 class PageSwitchEditMode:
+
     def GET(self, rid, edit_mode):
         if edit_mode == 'vim':
             web.setcookie('vim', 'yes', 480984220)
@@ -441,6 +483,7 @@ class PageSwitchEditMode:
 
         web.setcookie('vim', 'no', -1)
         raise web.seeother('/robot/' + rid + '/edit')
+
 
 class PageEditRobot:
     _form = web.form.Form(
@@ -451,19 +494,18 @@ class PageEditRobot:
 
     def first_time(self):
         result = db.select('robots',
-            what='count(*)',
-            where='compiled and user_id = $user_id',
-            vars={'user_id': sess.user_id})
+                           what='count(*)',
+                           where='compiled and user_id = $user_id',
+                           vars={'user_id': sess.user_id})
         if result and result[0]['count'] == 0:
             return True
         user = db.select('users',
-            what='registered_on',
-            where='id = $id',
-            vars={'id': sess.user_id})
+                         what='registered_on',
+                         where='id = $id',
+                         vars={'id': sess.user_id})
         if user and time.time() - user[0]['registered_on'] < tools.DAY:
             return True
         return False
-
 
     def GET(self, rid, edit_mode):
         force_login(sess)
@@ -481,9 +523,9 @@ class PageEditRobot:
 
         first = self.first_time()
         db.update('robots',
-            where='id=$id',
-            vars={'id': rid},
-            saved=False)
+                  where='id=$id',
+                  vars={'id': rid},
+                  saved=False)
         return ltpl('editrobot', robot, edit_mode == 'vim', first)
 
     def POST(self, rid, edit_mode):
@@ -516,11 +558,11 @@ class PageEditRobot:
         robot_code = form.d.code
 
         db.update('robots',
-            where='id=$id',
-            vars={'id': rid},
-            name=form.d.name,
-            code=robot_code,
-            open_source=form.d.open_source)
+                  where='id=$id',
+                  vars={'id': rid},
+                  name=form.d.name,
+                  code=robot_code,
+                  open_source=form.d.open_source)
 
         robot = get_robot(rid)
         if not robot:
@@ -532,31 +574,38 @@ class PageEditRobot:
         else:
             rating = settings.default_rating
         db.update('robots',
-            where='id=$id',
-            vars={'id': rid},
-            last_updated=int(time.time()),
-            last_rating=rating,
-            compiled_code=compiled_code,
-            changed_since_sbtest=True,
-            saved=True,
-            passed=True,
-            compiled=True)
+                  where='id=$id',
+                  vars={'id': rid},
+                  last_updated=int(time.time()),
+                  last_rating=rating,
+                  compiled_code=compiled_code,
+                  changed_since_sbtest=True,
+                  saved=True,
+                  passed=True,
+                  compiled=True)
 
         raise web.seeother('/robot/{0}/edit'.format(robot.id))
 
 MATCHES_PER_PAGE = 20
 
+
 class PageRedirectViewRobot:
+
     def GET(self, rid):
         raise web.redirect('/robot/{0}'.format(rid))
 
+
 class PageRedirectViewUser:
+
     def GET(self, uid):
         raise web.redirect('/user/{0}'.format(uid))
 
+
 class PageRedirectRobotSource:
+
     def GET(self, rid):
         raise web.redirect('/robot/{0}/source'.format(rid))
+
 
 class PageViewRobot:
 
@@ -614,14 +663,15 @@ class PageViewRobot:
         challenges = 0
         if logged_in(sess):
             result = db.select('users',
-                what='challenges',
-                where='id=$id',
-                vars={'id': sess.user_id})
+                               what='challenges',
+                               where='id=$id',
+                               vars={'id': sess.user_id})
             if result:
                 challenges = CHALLENGES_LIMITS - result[0]['challenges']
 
         return ltpl('viewrobot', robot, matches, next_matches,
                     latest_match.id if latest_match else None, challenges)
+
 
 class PageRobotHistory:
 
@@ -651,7 +701,7 @@ class PageRobotHistory:
             if not opponent:
                 return lmsg('Robot against not found.')
 
-        #robot.about = self.convert_links(robot.about)
+        # robot.about = self.convert_links(robot.about)
 
         params = web.input(page=None, ranked=None, per=None)
         page = int(params.page or 0)
@@ -659,7 +709,8 @@ class PageRobotHistory:
         per = int(params.per or MATCHES_PER_PAGE)
         if per > 200 and not tplib.is_admin(sess):
             per = 200
-        ranked = 'and ranked' if ranked > 0 else 'and not ranked' if ranked < 0 else ''
+        ranked = ('and ranked' if ranked > 0 else
+                  'and not ranked' if ranked < 0 else '')
 
         if against is None:
             query = '''
@@ -697,15 +748,16 @@ class PageRobotHistory:
                 offset $page'''.format(ms.ERROR, ms.DONE, per,
                                        ranked)
             matches = db.query(
-                    query,
-                    vars={
-                        'id1': rid,
-                        'id2': against,
-                        'page': page * per
-                    })
+                query,
+                vars={
+                    'id1': rid,
+                    'id2': against,
+                    'page': page * per
+                })
 
         return ltpl('robot_history', robot, matches, page, per, against,
                     params.ranked)
+
 
 class PageViewUser:
 
@@ -765,6 +817,7 @@ class PageViewUser:
 
         return ltpl('viewuser', user, robots, disabled_robots)
 
+
 def get_match(mid, no_code=None):
     if no_code is None:
         query = '''
@@ -789,6 +842,7 @@ def get_match(mid, no_code=None):
     match = db.query(query, vars={'id': mid})
     return match[0] if match else None
 
+
 def get_pending_matches():
     query = '''
         select
@@ -801,16 +855,18 @@ def get_pending_matches():
         where state = {0} and not ranked'''.format(ms.WAITING)
     return db.query(query)
 
+
 class PageChallengeRobot:
+
     def match_running(self, rid, challenger):
         result = db.select('matches',
-            what='id',
-            where='''
+                           what='id',
+                           where='''
                 (r1_id = $id1 and r2_id = $id2 or
                     r1_id = $id2 and r2_id = $id1)
                 and (state = {0} or state = {1})
                 '''.format(ms.WAITING, ms.RUNNING),
-            vars={'id1': rid, 'id2': challenger})
+                           vars={'id1': rid, 'id2': challenger})
         return result[0].id if result else None
 
     def eligible(self, rid):
@@ -821,18 +877,28 @@ class PageChallengeRobot:
         return result and result[0]['count'] > 0
 
     def is_self(self, rid):
-        result = db.select('robots', what='user_id', where='id=$id', vars={'id': rid})
+        result = db.select(
+            'robots',
+            what='user_id',
+            where='id=$id',
+            vars={
+                'id': rid})
         return (result and result[0]['user_id'] == sess.user_id)
 
     def get_rating(self, rid):
-        result = db.select('robots', what='rating', where='id=$id', vars={'id': rid})
+        result = db.select(
+            'robots',
+            what='rating',
+            where='id=$id',
+            vars={
+                'id': rid})
         return result[0]['rating']
 
     def limit_ok(self, user_id, num_matches):
         result = db.select('users',
-            what='challenges',
-            where='id=$id',
-            vars={'id': user_id})
+                           what='challenges',
+                           where='id=$id',
+                           vars={'id': user_id})
 
         if result:
             result = result[0]
@@ -860,7 +926,7 @@ class PageChallengeRobot:
             robots = db.select(
                 'robots',
                 where='user_id=$id and compiled and passed and not deleted',
-                vars={'id':sess.user_id})
+                vars={'id': sess.user_id})
             return ltpl('choosechallenge', rid, robots)
 
         challenger = int(challenger)
@@ -898,8 +964,8 @@ class PageChallengeRobot:
             raise web.seeother('/robot/{0}'.format(rid))
 
 
-
 class PageMatchList:
+
     def GET(self):
         recent = get_last_matches(100)
         query = '''
@@ -918,6 +984,7 @@ class PageMatchList:
 
 
 class PageMatch:
+
     def GET(self, mid):
         match = get_match(int(mid))
         if not match:
@@ -928,24 +995,29 @@ class PageMatch:
         has_match_log = time.time() - match.timestamp < tools.WEEK
         return ltpl('match', match, has_match_log)
 
+
 class PageStatic:
+
     def GET(self, page):
         return ltpl(page)
 
 PER_PAGE = 20
+
+
 class PageDirectory:
+
     def get_ranking(self, rating, where=''):
         if rating is None:
             count = db.select('robots',
-                what='count(*)',
-                where='''compiled and passed and not disabled
+                              what='count(*)',
+                              where='''compiled and passed and not disabled
                          and rating is not NULL {0}'''.format(where))
         else:
             count = db.select('robots',
-                what='count(*)',
-                where='''compiled and passed and not disabled
+                              what='count(*)',
+                              where='''compiled and passed and not disabled
                          and rating > $rating + 1e-5 {0}'''.format(where),
-                vars={'rating': rating})
+                              vars={'rating': rating})
         return count[0]['count'] if count else None
 
     def GET(self):
@@ -983,32 +1055,32 @@ class PageDirectory:
         if params.upper == '':
             upper = None
             robots = list(db.select('robots',
-                what=os_what,
-                where='''compiled and rating is NULL and passed
+                                    what=os_what,
+                                    where='''compiled and rating is NULL and passed
                          and not deleted {0}'''.format(os_where),
-                order=order,
-                limit=per,
-                offset=page*per,
-                vars=locals()))
+                                    order=order,
+                                    limit=per,
+                                    offset=page * per,
+                                    vars=locals()))
         else:
             if params.upper is None and 'logged_in' in sess and sess.user_id:
                 my_robots = list(db.select('robots',
-                    what='rating',
-                    where='''compiled and rating is not NULL and passed
+                                           what='rating',
+                                           where='''compiled and rating is not NULL and passed
                              and not deleted and user_id=$user_id
                              {0}'''.format(os_where),
-                    order=order,
-                    vars={'user_id': sess.user_id}))
+                                           order=order,
+                                           vars={'user_id': sess.user_id}))
                 if not my_robots:
                     top_rating = settings.default_rating
                 else:
                     top_rating = my_robots[0].rating
                 my_rank = self.get_ranking(top_rating, os_where)
                 goal_rank = max(0, my_rank - (per - 1) / 2)
-                #print top_rating, my_rank, goal_rank
+                # print top_rating, my_rank, goal_rank
                 left, right = int(top_rating), 10000
                 while left < right:
-                    #print left, right
+                    # print left, right
                     mid = (left + right + 1) / 2
                     cur_rank = self.get_ranking(mid, os_where)
                     if cur_rank > goal_rank:
@@ -1021,13 +1093,15 @@ class PageDirectory:
                 upper = left
             else:
                 upper = float(params.upper or 1000000)
-            robots = list(db.select('robots',
+            robots = list(db.select(
+                'robots',
                 what=os_what,
-                where='''compiled and passed and not deleted
-                         and (rating <= $upper or rating is NULL) {0}'''.format(os_where),
+                where='compiled and passed and not deleted'
+                      'and (rating <= $upper or rating is NULL)'
+                      '{0}'.format(os_where),
                 order=order,
                 limit=per,
-                offset=page*per,
+                offset=page * per,
                 vars=locals()))
 
         start_ranking = 0
@@ -1037,7 +1111,9 @@ class PageDirectory:
                     params.latest, params.os, params.diff, params.viewactive,
                     params.fast, params.short)
 
+
 class PageStats:
+
     def count_users_registered(self):
         count = db.select('users',
                           what='count(*)',
@@ -1059,7 +1135,8 @@ class PageStats:
         return self.count_users_period(tools.WEEK)
 
     def count_users_with_passing_robots(self):
-        users = db.select('robots',
+        users = db.select(
+            'robots',
             what='1',
             where='compiled and passed and not disabled and automatch',
             group='user_id')
@@ -1067,41 +1144,42 @@ class PageStats:
 
     def count_users_with_robots(self):
         users = db.select('robots',
-            what='1',
-            where='compiled and not disabled and automatch',
-            group='user_id')
+                          what='1',
+                          where='compiled and not disabled and automatch',
+                          group='user_id')
         return len(users) if users else None
 
     def count_robots_not_disabled(self):
         count = db.select('robots',
-            what='count(*)',
-            where='not disabled and automatch')
+                          what='count(*)',
+                          where='not disabled and automatch')
         return count[0]['count'] if count else 0
 
     def count_robots_compiled(self):
         count = db.select('robots',
-            what='count(*)',
-            where='compiled and not disabled and automatch')
+                          what='count(*)',
+                          where='compiled and not disabled and automatch')
         return count[0]['count'] if count else 0
 
     def count_robots_passing(self):
-        count = db.select('robots',
+        count = db.select(
+            'robots',
             what='count(*)',
             where='compiled and passed and not disabled and automatch')
         return count[0]['count'] if count else 0
 
     def count_robots_available(self):
         count = db.select('robots',
-            what='count(*)',
-            where='compiled and passed and not disabled')
+                          what='count(*)',
+                          where='compiled and passed and not disabled')
         return count[0]['count'] if count else 0
 
     def count_robots_updated(self):
         count = db.select('robots',
-            what='count(*)',
-            where='''compiled and passed and not disabled
+                          what='count(*)',
+                          where='''compiled and passed and not disabled
                      and last_updated > $time''',
-            vars={'time': time.time() - tools.MONTH})
+                          vars={'time': time.time() - tools.MONTH})
         return count[0]['count'] if count else 0
 
     def count_matches(self):
@@ -1114,7 +1192,9 @@ class PageStats:
         return match_count[0]['count'] if match_count else None
 
     def average_rating(self):
-        result = db.select('robots', what='AVG(rating)',
+        result = db.select(
+            'robots',
+            what='AVG(rating)',
             where='passed and compiled and not disabled')[0]['avg']
         return int(result) if result is not None else 0
 
@@ -1153,6 +1233,7 @@ class PageStats:
 
 
 class PageRobotStats:
+
     def GET(self):
         robots = db.select(
             'robots',
@@ -1172,6 +1253,7 @@ class PageRobotStats:
 
 
 class PageMatchData:
+
     def GET(self, mid=None):
         if mid is None:
             histories = db.select('history', what='match_id, timestamp')
@@ -1192,10 +1274,23 @@ class PageMatchData:
             return json.dumps(match)
 
 
+class PageMatchRun:
+    def POST(self):
+        data = json.loads(web.data())
+        game_data = data['game']
+        action_data = data['actions']
+        state = rgkit.gamestate.GameState.create_from_json(game_data)
+        moves = rgkit.gamestate.GameState.create_actions_from_json(action_data)
+        new_state = state.apply_actions(moves)
+        info = new_state.get_game_info(json=True, seed=True)
+        return json.dumps(info)
+
+
 DEFAULT_PERIOD = tools.MONTH
 
 
 class PageRobotCharts:
+
     def get_robot(self, rid):
         query = '''
             select
@@ -1293,9 +1388,12 @@ class PageRobotCharts:
         chart_data = self.get_chart_data(robot, params.full)
         return ltpl('robotcharts', robot, chart_data, params.full)
 
+
 class PageStaticBlank:
+
     def GET(self, page):
         return tpl(page)
+
 
 class PageProfile:
     _form = web.form.Form(
@@ -1324,12 +1422,20 @@ class PageProfile:
             return lmsg('Invalid input.')
 
         if len(form.d.about) > 5000:
-            return lmsg('Please limit your profile to fewer than 5,000 characters.')
+            return lmsg(
+                'Please limit your profile to fewer than 5,000 characters.')
 
-        db.update('users', where='id=$id', about=form.d.about, vars={'id': sess.user_id})
+        db.update(
+            'users',
+            where='id=$id',
+            about=form.d.about,
+            vars={
+                'id': sess.user_id})
         raise web.seeother('/user/{0}'.format(sess.user_id))
 
+
 class PageRobotTest:
+
     def GET(self, rid):
         rid = int(rid)
         robot = get_robot(rid, check_user_id=False)
@@ -1350,7 +1456,8 @@ class PageRobotTest:
         for os_robot in os_robots:
             os_code = os_robot.code.splitlines(True)
             code = robot.code.splitlines(True)
-            if len(os_code) > 1.5 * len(code) or len(code) > 1.5 * len(os_code):
+            if len(os_code) > 1.5 * \
+                    len(code) or len(code) > 1.5 * len(os_code):
                 continue
             ud = difflib.ndiff(os_code, code)
             ud = [line for line in ud if line[:2] != '? ']
@@ -1368,13 +1475,17 @@ class PageRobotTest:
         else:
             return lmsg('No similarities found.')
 
+
 class PageRobotSource:
+
     def GET(self, rid):
         rid = int(rid)
         robot = get_robot(rid, check_user_id=False)
         if not robot:
             return lmsg('That robot was not found.')
-        if robot.open_source or (logged_in(sess) and sess.user_id == robot.user_id) or tplib.is_admin(sess):
+        if robot.open_source or (
+                logged_in(sess) and
+                sess.user_id == robot.user_id) or tplib.is_admin(sess):
             web.header('Content-Type', 'text/html')
             return tpl(
                 'robotsource',
@@ -1385,6 +1496,7 @@ class PageRobotSource:
                 robot.name,
                 robot.open_source)
         raise web.seeother('/robot/{0}'.format(rid))
+
 
 def get_robot_with_ranking(rid):
     where = 'id=$id'
@@ -1404,7 +1516,9 @@ def get_robot_with_ranking(rid):
     result = db.query(query, vars=vars)
     return result[0] if result else None
 
+
 class PageDisableRobot:
+
     def GET(self, rid):
         force_login(sess)
         rid = int(rid)
@@ -1413,18 +1527,20 @@ class PageDisableRobot:
             return lmsg('That robot was not found.')
         if tplib.is_admin(sess):
             db.update('robots',
-                where='id=$id',
-                vars={'id': rid},
-                disabled=True)
+                      where='id=$id',
+                      vars={'id': rid},
+                      disabled=True)
             raise web.seeother('/robot/{0}'.format(rid))
         else:
             db.update('robots',
-                where='id=$id and user_id=$user_id',
-                vars={'id': rid, 'user_id': sess.user_id},
-                disabled=True)
+                      where='id=$id and user_id=$user_id',
+                      vars={'id': rid, 'user_id': sess.user_id},
+                      disabled=True)
             raise web.seeother('/robots')
 
+
 class PageEnableRobot:
+
     def GET(self, rid):
         force_login(sess)
         rid = int(rid)
@@ -1433,26 +1549,28 @@ class PageEnableRobot:
             return lmsg('That robot was not found.')
         if tplib.is_admin(sess):
             db.update('robots',
-                where='id=$id',
-                vars={'id': rid},
-                disabled=False)
+                      where='id=$id',
+                      vars={'id': rid},
+                      disabled=False)
             raise web.seeother('/robot/{0}'.format(rid))
         else:
             robot_count = count_robots(sess.user_id)
             user = db.select('users', what='extra_bots', where='id=$id',
-                    vars={'id': sess.user_id})
+                             vars={'id': sess.user_id})
             robot_limit = ROBOTS_LIMITS
             if user:
                 robot_limit += user[0]['extra_bots']
             if robot_count >= robot_limit:
                 return lmsg(BOT_LIMIT_REACHED_MSG.format(robot_limit))
             db.update('robots',
-                where='id=$id and user_id=$user_id',
-                vars={'id': rid, 'user_id': sess.user_id},
-                disabled=False)
+                      where='id=$id and user_id=$user_id',
+                      vars={'id': rid, 'user_id': sess.user_id},
+                      disabled=False)
             return web.seeother('/robots')
 
+
 class PageDeleteRobot:
+
     def GET(self, rid):
         force_login(sess)
         rid = int(rid)
@@ -1466,28 +1584,32 @@ class PageDeleteRobot:
         rid = int(rid)
         if tplib.is_admin(sess):
             db.update('robots',
-                where='id=$id',
-                vars={'id': rid},
-                disabled=True,
-                deleted=True)
+                      where='id=$id',
+                      vars={'id': rid},
+                      disabled=True,
+                      deleted=True)
             raise web.seeother('/robot/{0}'.format(rid))
         else:
             db.update('robots',
-                where='id=$id and user_id=$user_id',
-                vars={'id': rid, 'user_id': sess.user_id},
-                disabled=True,
-                deleted=True)
+                      where='id=$id and user_id=$user_id',
+                      vars={'id': rid, 'user_id': sess.user_id},
+                      disabled=True,
+                      deleted=True)
             raise web.seeother('/robots')
 
+
 class PageModerate:
+
     def GET(self, rid=None):
-        if not tplib.is_mod(sess): raise web.seeother('/')
+        if not tplib.is_mod(sess):
+            raise web.seeother('/')
 
         if rid is not None:
             rid = int(rid)
             query = """
-                insert into fail_bots (hash, code) select md5($code), $code where
-                not exists (select 1 from fail_bots where hash = md5($code))
+                insert into fail_bots (hash, code) select md5($code), $code
+                where not exists
+                (select 1 from fail_bots where hash = md5($code))
             """
             robots = db.select('robots', what='compiled_code', where='id=$id',
                                vars={'id': rid})
@@ -1507,13 +1629,15 @@ class PageModerate:
         maximum = int(web.input(maximum=100000).maximum)
         return ltpl('moderate', robots, maximum)
 
+
 class PageUpdatePrefs(object):
+
     def GET(self):
         params = web.input(show_actions=None, show_grid=None)
         if params.show_actions is not None:
-            sess.show_actions = True if params.show_actions=='yes' else False
+            sess.show_actions = True if params.show_actions == 'yes' else False
         if params.show_grid is not None:
-            sess.show_grid = True if params.show_grid=='yes' else False
+            sess.show_grid = True if params.show_grid == 'yes' else False
         return web.ok
 
 MAX_RETRIES = 10

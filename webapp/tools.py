@@ -7,6 +7,7 @@ MONTH = 30 * DAY
 
 DEFAULT_RATING = 1200.0
 
+
 def get_k_factor(rating):
     if rating >= 4800:
         return 2

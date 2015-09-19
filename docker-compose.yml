@@ -15,7 +15,7 @@ matchmaker:
   links:
     - db
   volumes:
-    - ./matchlog:/var/log/robot/matches
+    - ./matchlog:/matchlog
     - ./matchmaker:/usr/src/app
 webapp:
   build: webapp
@@ -30,9 +30,9 @@ server:
   ports:
     - "8000:80"
   volumes:
-    - ./matchlog:/usr/local/matchlog
+    - ./matchlog:/matchlog
     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    - ./static:/usr/local/static
+    - ./static:/static
 run:
   command: One-off runner for rgserver
   entrypoint: /bin/echo
@@ -40,6 +40,6 @@ run:
   links:
     - db
   volumes:
-    - ./matchlog:/matchlog
     - ./dbbackups:/dbbackups
+    - ./matchlog:/matchlog
     - ./sql:/sql

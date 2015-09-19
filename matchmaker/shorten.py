@@ -3,6 +3,7 @@ import zlib
 import base64
 import pickle
 
+
 def dumps(obj):
     obj = pickle.dumps(obj)
     obj = zlib.compress(obj)

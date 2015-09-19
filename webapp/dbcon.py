@@ -9,6 +9,8 @@ params = {
 }
 
 connection = None
+
+
 def connect_db():
     global params
     global connection
