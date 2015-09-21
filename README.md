@@ -22,5 +22,5 @@ matchmaker starts automatically.
 
 1. [Sync](https://help.github.com/articles/syncing-a-fork/) with upstream.
 2. Run `docker-compose stop`.
-3. Run `docker-compose rm -v` (this will remove all data).
+3. Run `docker-compose build`.
 4. Run `docker-compose up`.

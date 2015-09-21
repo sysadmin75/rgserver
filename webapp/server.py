@@ -286,6 +286,8 @@ class PageHome:
             return ltpl('home')
         rating = 3000.0
         match = get_latest_match(rating)
+        if match is None:
+            match = get_latest_match()
         if match:
             match.data = get_match_data(match['id'])
         recent = get_last_matches(5, rating)
