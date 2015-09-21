@@ -1096,7 +1096,7 @@ class PageDirectory:
             robots = list(db.select(
                 'robots',
                 what=os_what,
-                where='compiled and passed and not deleted'
+                where='compiled and passed and not deleted '
                       'and (rating <= $upper or rating is NULL)'
                       '{0}'.format(os_where),
                 order=order,
