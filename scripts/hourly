@@ -1,3 +1,6 @@
 #!/bin/bash
 # Run sql
+export PATH="/usr/local/bin:$PATH"
+echo 'SQL'
 docker-compose run --no-deps -e PGOPTIONS='--client-min-messages=warning' --entrypoint psql run -h db -U robot -d robotgame -q -1 -f /sql/hourly.sql
+echo 'Done'
