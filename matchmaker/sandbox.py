@@ -91,6 +91,7 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
                 exec code in mod.__dict__
             except:
                 trace_func(file=out)
+                return None
             finally:
                 cmp_time = time.time()
                 out.write(
@@ -102,7 +103,6 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
                         'Initialization: {0:.4g}s\n'.format(
                             ini_time - cmp_time))
                     return bot
-                return None
 
         for data in iter(queue_in.get, None):
             if 'query' in data:
@@ -110,7 +110,10 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
                 mod = imp.new_module('usercode')
                 drop_privileges()
                 robot = make_user_robot(user_code, mod)
-                queue_out.put({'result': 'ok'})
+                if robot is not None:
+                    queue_out.put({'result': 'ok'})
+                else:
+                    queue_out.put({'result': 'failed'})
             else:
                 robot.__dict__.update(data['properties'])
                 random.seed(data['game'].seed)
