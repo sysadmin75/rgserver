@@ -119,10 +119,6 @@ def update_stats(db, match, r1_time, r2_time, score):
              vars={'id': match['r2_id'], 'r': WIN_RATE, 't': 1 - score})
 
 
-class ProxyDeadError(Exception):
-    pass
-
-
 def run_game(db, match, output_file):
     proxy_process1, proxy_process2 = None, None
     try:
@@ -143,9 +139,6 @@ def run_game(db, match, output_file):
                       where='id=$id', vars={'id': match['r2_id']})
             raise Exception('Robot 2 not able to be instantiated.')
 
-        if not (proxy_process1 is not None and proxy_process2 is not None and
-                proxy_process1.alive() and proxy_process2.alive()):
-            raise ProxyDeadError('the process is dead')
         g = rgkit.game.Game([p1,
                              p2],
                             record_actions=False,
@@ -154,9 +147,6 @@ def run_game(db, match, output_file):
                             seed=match['seed'],
                             symmetric=SYMMETRIC)
         g.run_all_turns()
-        if not (proxy_process1 is not None and proxy_process2 is not None and
-                proxy_process1.alive() and proxy_process2.alive()):
-            raise ProxyDeadError('the process is dead')
 
         game_scores = g.get_scores()
         r1_score, r2_score = game_scores
@@ -189,6 +179,15 @@ def run_game(db, match, output_file):
             r1_time=r1_time, r2_time=r2_time,
             timestamp=int(time.time()))
         db.printing = old_print
+
+        if not proxy_process1.alive():
+            db.update('robots', passed=False,
+                      where='id=$id', vars={'id': match['r1_id']})
+            output_file.write('Robot 1 died, marking as invalid bot.')
+        if not proxy_process2.alive():
+            db.update('robots', passed=False,
+                      where='id=$id', vars={'id': match['r2_id']})
+            output_file.write('Robot 2 died, marking as invalid bot.')
 
         return score, r1_time, r2_time
     finally:
