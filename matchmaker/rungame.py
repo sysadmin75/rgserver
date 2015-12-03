@@ -183,11 +183,11 @@ def run_game(db, match, output_file):
         if not proxy_process1.alive():
             db.update('robots', passed=False,
                       where='id=$id', vars={'id': match['r1_id']})
-            output_file.write('Robot 1 died, marking as invalid bot.')
+            output_file.write('Robot 1 died, marking as invalid bot.\n')
         if not proxy_process2.alive():
             db.update('robots', passed=False,
                       where='id=$id', vars={'id': match['r2_id']})
-            output_file.write('Robot 2 died, marking as invalid bot.')
+            output_file.write('Robot 2 died, marking as invalid bot.\n')
 
         return score, r1_time, r2_time
     finally:
