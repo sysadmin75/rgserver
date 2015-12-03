@@ -12,6 +12,4 @@ docker-compose run --no-deps --entrypoint pg_dump run -h db -U robot -d robotgam
 # Keep for 2 weeks so fewer 404s for Google
 echo 'Clean matchlog'
 docker-compose run --no-deps --entrypoint find run /matchlog/ -not -path "/matchlog/" -not -path "*/.gitkeep" -mtime +13 -delete;
-# Do not compress.
-#docker-compose run --no-deps --entrypoint find run /matchlog/ -not -path "/matchlog/" -not -path "*/.gitkeep" -not -name "*.gz" -exec gzip -6 "{}" \;
 echo 'Done'
