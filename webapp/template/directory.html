@@ -1,4 +1,4 @@
-$def with (robots, upper, start_ranking, page, per, latest, os, diff, viewactive, fast, short)
+$def with (robots, upper, start_ranking, page, per, latest, os, diff, viewall, fast, short)
 
 $def option(n):
   $if n is None:
@@ -7,7 +7,7 @@ $def option(n):
     $ label = 'All-Bots'
   $else:
     $ label = '&le;%d' % n
-  <a href="?upper=$n&per=$per&viewactive=$viewactive">$:label</a>
+  <a href="?upper=$n&per=$per&viewall=$viewall">$:label</a>
 
 $var title: Warehouse
 
@@ -15,39 +15,39 @@ $var title: Warehouse
 <!--<p>A list of all compiled robots on the server, ready for battle.</p>-->
 <hr/>
 <div>
-  <a href="?upper=99999&os=1&per=$per&viewactive=$viewactive">
+  <a href="?upper=99999&os=1&per=$per&viewall=$viewall">
     <i class="fa fa-github" rel="tooltip" title="Open-source bots"></i></a>
   <span class="faded">&middot;</span>
-  $if not viewactive:
-    <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&per=$per&viewactive=1">
+  $if viewall:
+    <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&per=$per&viewall=">
       Active-only</a>
   $else:
-    <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&per=$per&viewactive=">
+    <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&per=$per&viewall=1">
       View-all</a>
   <span class="faded">&middot;</span>
-  <a href="?upper=99999&latest=1&per=$per&viewactive=$viewactive">
+  <a href="?upper=99999&latest=1&per=$per&viewall=$viewall">
     Updated</a>
   <span class="faded">&middot;</span>
-  <a href="?upper=99999&diff=1&per=$per&viewactive=$viewactive">
+  <a href="?upper=99999&diff=1&per=$per&viewall=$viewall">
     Rising</a>
   <span class="faded">&middot;</span>
-  <a href="?upper=99999&fast=1&per=$per&viewactive=$viewactive"
+  <a href="?upper=99999&fast=1&per=$per&viewall=$viewall"
      rel="tooltip" title="<2 seconds.">
     Fast</a>
   <span class="faded">&middot;</span>
-  <a href="?upper=99999&short=1&per=$per&viewactive=$viewactive"
+  <a href="?upper=99999&short=1&per=$per&viewall=$viewall"
      rel="tooltip" title="<1000 characters.">
     Short</a>
   <span class="faded">&middot;</span>
-  <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&viewactive=$viewactive&per=50"
+  <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&viewall=$viewall&per=50"
      rel="tooltip" title="50 bots per page.">
     /50</a>
   <span class="faded">&middot;</span>
-  <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&viewactive=$viewactive&per=100"
+  <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&viewall=$viewall&per=100"
      rel="tooltip" title="100 bots per page.">
     /100</a>
   <span class="faded">&middot;</span>
-  <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&viewactive=$viewactive&per=200"
+  <a href="?upper=99999&latest=$latest&os=$os&diff=$diff&fast=$fast&short=$short&viewall=$viewall&per=200"
      rel="tooltip" title="200 bots per page.">
     /200</a>
   <!--<span class="faded">&middot;</span>
@@ -121,13 +121,13 @@ $var title: Warehouse
       <p>No more robots.</p>
   <p class="right">
     $if page >= 1:
-      <a href="?upper=$upper&page=$(page-1)&latest=$latest&os=$os&diff=$diff&viewactive=$viewactive&fast=$fast&short=$short&per=$per">
+      <a href="?upper=$upper&page=$(page-1)&latest=$latest&os=$os&diff=$diff&viewall=$viewall&fast=$fast&short=$short&per=$per">
         <i class="fa fa-fw fa-caret-left" id="key-left"></i>Prev
       </a>
     $if len(robots) == per:
       $if page >= 1:
         <span class="faded">&middot;</span>
-      <a href="?upper=$upper&page=$(page+1)&latest=$latest&os=$os&diff=$diff&viewactive=$viewactive&fast=$fast&short=$short&per=$per">
+      <a href="?upper=$upper&page=$(page+1)&latest=$latest&os=$os&diff=$diff&viewall=$viewall&fast=$fast&short=$short&per=$per">
         Next<i class="fa fa-fw fa-caret-right" id="key-right"></i>
       </a>
   </p>

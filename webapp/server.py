@@ -1024,7 +1024,7 @@ class PageDirectory:
 
     def GET(self):
         params = web.input(upper=None, page=None, latest=None, os=None,
-                           diff=None, pri=None, viewactive=None, fast=None,
+                           diff=None, pri=None, viewall=None, fast=None,
                            time=None, short=None, disabled=None, tlimit=None,
                            win=None, per=None)
         params.diff = int(params.diff or 0)
@@ -1047,7 +1047,7 @@ class PageDirectory:
             per = 200
         os_where = ' and not disabled' if not params.disabled else ''
         os_where += ' and open_source' if params.os else ''
-        os_where += ' and automatch' if params.viewactive else ''
+        os_where += ' and automatch' if not params.viewall else ''
         t = 2 if not params.tlimit else float(params.tlimit)
         os_where += ' and time < {0}'.format(t) if params.fast else ''
         os_where += ' and length(compiled_code) < 1000' if params.short else ''
@@ -1110,7 +1110,7 @@ class PageDirectory:
         if robots:
             start_ranking = self.get_ranking(robots[0].rating, os_where)
         return ltpl('directory', robots, upper, start_ranking, page, per,
-                    params.latest, params.os, params.diff, params.viewactive,
+                    params.latest, params.os, params.diff, params.viewall,
                     params.fast, params.short)
 
 
