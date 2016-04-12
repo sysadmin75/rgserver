@@ -206,16 +206,15 @@ def logout_user(sess):
 
 def template_closure(directory, extra=None):
     global settings
-    globals = {
+    myglobals = {
         'sess': sess,
         'settings': settings,
         'tplib': tplib,
     }
     if extra is not None:
-        globals.update(extra)
-    templates = web.template.render(
-        directory, globals=globals
-    )
+        myglobals.update(extra)
+    templates = web.template.render(directory, globals=myglobals)
+
     def render(name, *params, **kwargs):
         return getattr(templates, name)(*params, **kwargs)
     return render
