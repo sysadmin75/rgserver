@@ -7,7 +7,7 @@ docker-compose run --rm --no-deps -e PGOPTIONS='--client-min-messages=warning' -
 echo 'Backup dbs'
 docker-compose run --rm --no-deps --entrypoint pg_dump run -h db -U robot -d robotgame --format=c -s -f /dbbackups/`date +\%Y-\%m-\%d`-robotgame-schema
 docker-compose run --rm --no-deps --entrypoint pg_dump run -h db -U robot -d robotgame --format=c -a -T history -f /dbbackups/`date +\%Y-\%m-\%d`-robotgame-data
-# Retore dbs
+# Restore dbs
 #docker-compose run --rm --no-deps --entrypoint pg_restore run -h db -U robot -d robotgame --format=c -a /dbbackups/restoredata
 # Compress matches
 # Note that -mtime +1 matches at least 2 days ago

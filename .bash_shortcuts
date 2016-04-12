@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
-alias dkc=docker-compose
-alias dkcupd='dkc up -d'
-alias dkcstop='dkc stop'
-alias dkcrmall='dkc rm -v -f db matchmaker webapp server run'
-alias dkcrestart='dkcstop && dkcrmall && dkcupd'
+alias doc=docker-compose
+alias docupd='doc up -d'
+alias docstop='doc stop'
+alias docrmall='doc rm -v -f db matchmaker webapp server run'
+alias docrestart='docstop && docrmall && docupd'
