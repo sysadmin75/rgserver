@@ -13,8 +13,7 @@ MODERATORS = (
     2840,  # aurick
 )
 CONTRIBUTORS = (
-    #7392, # WhiteHalmos
-    5192, # Sh4rk
+    5192,  # Sh4rk
 )
 
 
@@ -228,11 +227,15 @@ def fancy_display_name(robot):
                  {2}
              </a>'''.format(color, robot.id, robot.name)
     if robot.fast:
-        res += '\n<i class="fa fa-tachometer trophy-fast" rel="tooltip" title="Fast bot trophy."></i>'
+        res += '''\n<i class="fa fa-tachometer trophy-fast" rel="tooltip"
+                    title="Fast bot trophy."></i>'''
     if robot.short:
-        res += '\n<i class="fa fa-suitcase trophy-short" rel="tooltip" title="Short bot trophy."></i>'
+        res += '''\n<i class="fa fa-suitcase trophy-short" rel="tooltip"
+                    title="Short bot trophy."></i>'''
     if robot.open_source:
-        res += '\n<i class="fa fa-github faded" rel="tooltip" title="Open-source."></i>'
+        res += '''\n<i class="fa fa-github faded" rel="tooltip"
+                    title="Open-source."></i>'''
     if robot.user_id and robot.user_id in CONTRIBUTORS:
-        res += '\n<i class="fa fa-star trophy-contributor" rel="tooltip" title="Robot Game supporter, thank you!"></i>'
+        res += '''\n<i class="fa fa-star trophy-contributor" rel="tooltip"
+                    title="Robot Game supporter, thank you!"></i>'''
     return res
