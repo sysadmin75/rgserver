@@ -31,13 +31,7 @@ $var title: Viewing user $user.id
   $for robot in robots:
       <p>
           <div class="large">
-            <a href="/robot/$robot.id">$robot.name</a>
-            $if robot.fast:
-              <i class="fa fa-tachometer trophy-fast" rel="tooltip" title="Fast bot trophy."></i>
-            $if robot.short:
-              <i class="fa fa-suitcase trophy-short" rel="tooltip" title="Short bot trophy."></i>
-            $if robot.open_source:
-              <i class="fa fa-github faded" rel="tooltip" title="This robot is open-source!"></i>
+            $:tplib.fancy_display_name(robot)
           </div>
           <div class="faded">
               Elo rating: $:tplib.drating(robot)<br/>

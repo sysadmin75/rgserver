@@ -1,2 +1,2 @@
 #!/bin/bash
-docker-compose run --entrypoint psql run -h db -U robot -d robotgame
+exec docker-compose run --rm --no-deps --entrypoint psql run -h db -U robot -d robotgame

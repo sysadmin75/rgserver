@@ -3,21 +3,7 @@ $var title: Charts for $robot.name
 <div class="clearfix">
     <div class="left">
         <h1 class="no-margin">
-          $if tplib.timedelta_ago(robot.last_updated).days < 3:
-            $ color_class = 'fresh'
-          $elif robot.automatch:
-            $ color_class = 'automatch'
-          $else:
-            $ color_class = ''
-          <a class="name $color_class" href="/robot/$robot.id">
-            $robot.name
-          </a>
-          $if robot.fast:
-            <i class="fa fa-tachometer trophy-fast" rel="tooltip" title="Fast bot trophy."></i>
-          $if robot.short:
-            <i class="fa fa-suitcase trophy-short" rel="tooltip" title="Short bot trophy."></i>
-          $if robot.open_source:
-            <i class="fa fa-github faded" rel="tooltip" title="Open-source."></i>
+          $:tplib.fancy_display_name(robot)
         </h1>
         <div class="faded">
             <div>Elo rating: $:tplib.drating(robot, decimal=True)</div>

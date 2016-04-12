@@ -2622,6 +2622,9 @@ abbr {
 .trophy-short {
   color: peru;
 }
+.trophy-contributor {
+  color: gold;
+}
 
 .chart {
   width: 228px;

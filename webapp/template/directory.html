@@ -86,32 +86,14 @@ $var title: Warehouse
           <div class="rating-diff" rel="tooltip" title="$tplib.rating_diff(robot)">
             <i class="fa $tplib.rating_diff_class(robot)"></i>
           </div>
-        $if 'logged_in' in sess and sess['user_id'] == robot.user_id:
-          $ color_class = 'me'
-          $ exp = 'My own bot'
-        $elif tplib.timedelta_ago(robot.last_updated).days < 3:
-          $ color_class = 'fresh'
-        $elif robot.automatch:
-          $ color_class = 'automatch'
-        $else:
-          $ color_class = ''
         <div>
-          <a class="name $color_class" href="/robot/$robot.id">
-            $robot.name
-          </a>
-          $if robot.fast:
-            <i class="fa fa-tachometer trophy-fast" rel="tooltip" title="Fast bot trophy."></i>
-          $if robot.short:
-            <i class="fa fa-suitcase trophy-short" rel="tooltip" title="Short bot trophy."></i>
+          $:tplib.fancy_display_name(robot)
         </div>
         $if tplib.is_mod(sess):
           <div>
             $tplib.rounded(100 * robot.winrate)%
           </div>
-        <div class="open-source last defcursor faded">
-          $if not os and robot.open_source:
-            <i class="fa fa-github faded" rel="tooltip" title="This robot is open-source!"></i>
-        </div>
+        <div class="last"></div>
       </div>
   </div>
   $if len(robots) == 0:

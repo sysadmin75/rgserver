@@ -12,7 +12,7 @@ import shorten
 import rgkit.game
 import tools
 
-S_MATCH_REST = 4.0
+S_MATCH_REST = 2.0
 
 TIME_RATE = 0.1
 WIN_RATE = 0.05

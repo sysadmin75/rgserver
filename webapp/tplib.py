@@ -9,11 +9,13 @@ ADMINS = (
     1,  # bh (hehe, just use one account to be safe
 )
 MODERATORS = (
-    7392,  # WhiteHalmos
     1,  # bh
-    2840  # aurick
+    2840,  # aurick
 )
-USER_SALT = 'bbiuyxzoswekl;jgtohgoaboih'
+CONTRIBUTORS = (
+    #7392, # WhiteHalmos
+    5192, # Sh4rk
+)
 
 
 def is_mod(sess):
@@ -213,3 +215,24 @@ def safe_markdown(string):
     string = markdown.markdown(string)
     others = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
     return bleach.clean(string, tags=bleach.ALLOWED_TAGS + others)
+
+
+def fancy_display_name(robot):
+    if timedelta_ago(robot.last_updated).days < 3:
+        color = 'fresh'
+    elif robot.automatch:
+        color = 'automatch'
+    else:
+        color = ''
+    res = '''<a class="name {0}" href="/robot/{1}">
+                 {2}
+             </a>'''.format(color, robot.id, robot.name)
+    if robot.fast:
+        res += '\n<i class="fa fa-tachometer trophy-fast" rel="tooltip" title="Fast bot trophy."></i>'
+    if robot.short:
+        res += '\n<i class="fa fa-suitcase trophy-short" rel="tooltip" title="Short bot trophy."></i>'
+    if robot.open_source:
+        res += '\n<i class="fa fa-github faded" rel="tooltip" title="Open-source."></i>'
+    if robot.user_id and robot.user_id in CONTRIBUTORS:
+        res += '\n<i class="fa fa-star trophy-contributor" rel="tooltip" title="Robot Game supporter, thank you!"></i>'
+    return res
