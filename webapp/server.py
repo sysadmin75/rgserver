@@ -204,22 +204,25 @@ def logout_user(sess):
     sess.kill()
 
 
-def template_closure(directory):
+def template_closure(directory, extra=None):
     global settings
+    globals = {
+        'sess': sess,
+        'settings': settings,
+        'tplib': tplib,
+    }
+    if extra is not None:
+        globals.update(extra)
     templates = web.template.render(
-        directory,
-        globals={
-            'sess': sess,
-            'settings': settings,
-            'tplib': tplib,
-        },
+        directory, globals=globals
     )
-
     def render(name, *params, **kwargs):
         return getattr(templates, name)(*params, **kwargs)
     return render
 
-tpl = template_closure('template/')
+
+o_tpl = template_closure('template/')
+tpl = template_closure('template/', {'render': o_tpl})
 
 
 def ltpl(*params, **kwargs):
