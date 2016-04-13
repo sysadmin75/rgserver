@@ -14,6 +14,7 @@ MODERATORS = (
 )
 CONTRIBUTORS = (
     5192,  # Sh4rk
+    5672,  # Hjax
 )
 
 
