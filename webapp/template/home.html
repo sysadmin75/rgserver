@@ -76,6 +76,13 @@ $def with (match=None, recent=None)
         </div>
     </div>
   $if tplib.is_logged_in(sess):
+    <div>
+    $ current = 10
+    $ goal = 30
+    $ percent = tplib.rounded(current*100.0/goal)
+    <pre>Monthly donation goal for server: $$$goal</pre>
+    <pre>Current monthly donations: $$$current ($percent% there!)</pre>
+    </div>
     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
       <input type="hidden" name="cmd" value="_s-xclick">
       <input type="hidden" name="hosted_button_id" value="EKWJ8ELN3359Y">
