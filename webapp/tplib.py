@@ -6,7 +6,7 @@ import tools
 from datetime import datetime
 
 ADMINS = (
-    1,  # bh (hehe, just use one account to be safe
+    1,  # bh (hehe, just use one account to be safe)
 )
 MODERATORS = (
     1,  # bh
@@ -15,6 +15,7 @@ MODERATORS = (
 CONTRIBUTORS = (
     5192,  # Sh4rk
     5672,  # Hjax
+    8867,  # Dmhacker
 )
 
 
