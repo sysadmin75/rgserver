@@ -15,6 +15,8 @@ MODERATORS = (
 CONTRIBUTORS = (
     5192,  # Sh4rk
     5672,  # Hjax
+)
+PAST_CONTRIB = (
     8867,  # Dmhacker
 )
 
@@ -29,6 +31,18 @@ def is_admin(sess):
 
 def is_logged_in(sess):
     return 'logged_in' in sess and sess.logged_in
+
+
+def is_contributor_sess(sess):
+    return 'logged_in' in sess and sess.user_id in CONTRIBUTORS
+
+
+def is_contributor(user_id):
+    return user_id in CONTRIBUTORS
+
+
+def is_past_contributor(user_id):
+    return user_id in PAST_CONTRIB
 
 
 def get_pref(pref, sess):
@@ -237,7 +251,10 @@ def fancy_display_name(robot):
     if robot.open_source:
         res += '''\n<i class="fa fa-github faded" rel="tooltip"
                     title="Open-source."></i>'''
-    if robot.user_id and robot.user_id in CONTRIBUTORS:
+    if is_contributor(robot.user_id):
         res += '''\n<i class="fa fa-star trophy-contributor" rel="tooltip"
-                    title="Robot Game supporter, thank you!"></i>'''
+                    title="Current Robot Game supporter, thank you!"></i>'''
+    if is_past_contributor(robot.user_id):
+        res += '''\n<i class="fa fa-star-o trophy-contributor" rel="tooltip"
+                    title="Past Robot Game supporter, much appreciated!"></i>'''
     return res
