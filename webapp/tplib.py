@@ -239,7 +239,7 @@ def fancy_display_name(robot):
         color = 'automatch'
     else:
         color = ''
-    res = '''<a class="name {0}" href="/robot/{1}">
+    res = u'''<a class="name {0}" href="/robot/{1}">
                  {2}
              </a>'''.format(color, robot.id, robot.name)
     if robot.fast:
