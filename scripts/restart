@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e
+echo `date`
+# Go to project base.
+cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd
+export PATH="/usr/local/bin:$PATH"
+
+shopt -s expand_aliases
+. .bash_shortcuts
+docrestart
