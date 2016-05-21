@@ -78,10 +78,13 @@ $def with (match=None, recent=None)
   $if tplib.is_logged_in(sess):
     <div>
     $ current = 10
-    $ goal = 30
-    $ percent = tplib.rounded(current*100.0/goal)
-    <pre>Monthly donation goal for server: $$$goal</pre>
-    <pre>Current monthly donations: $$$current ($percent% there!)</pre>
+    $ goal1 = 10
+    $ percent1 = tplib.rounded(current*100.0/goal1)
+    $ goal2 = 30
+    $ percent2 = tplib.rounded(current*100.0/goal2)
+    <pre>Current monthly donations: $$$current</pre>
+    <pre>Monthly donation required for local server: $$$goal1 ($percent1%)</pre>
+    <pre>Monthly donation goal for cloud server: $$$goal2 ($percent2%)</pre>
     </div>
     $if tplib.is_contributor_sess(sess):
       <p>Thank you for your support!</p>
