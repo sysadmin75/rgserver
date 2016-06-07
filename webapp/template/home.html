@@ -76,37 +76,6 @@ $def with (match=None, recent=None)
         </div>
     </div>
   $if tplib.is_logged_in(sess):
-    <div>
-    $ current = 10
-    $ goal1 = 10
-    $ percent1 = tplib.rounded(current*100.0/goal1)
-    $ goal2 = 30
-    $ percent2 = tplib.rounded(current*100.0/goal2)
-    <pre>Current monthly donations: $$$current</pre>
-    <pre>Monthly donation required for local server: $$$goal1 ($percent1%)</pre>
-    <pre>Monthly donation goal for cloud server: $$$goal2 ($percent2%)</pre>
-    </div>
-    $if tplib.is_contributor_sess(sess):
-      <p>Thank you for your support!</p>
-    $else:
-      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-        <input type="hidden" name="cmd" value="_s-xclick">
-        <input type="hidden" name="hosted_button_id" value="EKWJ8ELN3359Y">
-        <input type="hidden" name="on1" value="User ID">
-        <input type="hidden" name="os1" maxlength="200" value="$(sess.user_id)">
-        <table>
-        <tr><td><input type="hidden" name="on0" value="Donate to Support Robot Game">Donate to Support Robot Game</td></tr><tr><td><select name="os0">
-          <option value="Silver">Silver : $$5.00 USD - monthly</option>
-          <option value="Gold">Gold : $$10.00 USD - monthly</option>
-          <option value="Bronze">Bronze : $$2.00 USD - monthly</option>
-        </select> </td></tr>
-        <tr><td><input type="hidden" name="on2" value="Email"><input type="text" name="os2" maxlength="200" placeholder="Email (optional)"></td></tr>
-        </table>
-        <input type="hidden" name="currency_code" value="USD">
-        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-      </form>
-    <br />
     <div class="g-post" data-href="https://plus.google.com/109162859755475455960/posts/fJHQ5nKV82X"></div>
     <script src="https://apis.google.com/js/plusone.js"></script>
 </div>
