@@ -13,10 +13,10 @@ MODERATORS = (
     2840,  # aurick
 )
 CONTRIBUTORS = (
-    5192,  # Sh4rk
-    5672,  # Hjax
 )
 PAST_CONTRIB = (
+    5192,  # Sh4rk
+    5672,  # Hjax
     8867,  # Dmhacker
 )
 

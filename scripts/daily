@@ -9,6 +9,7 @@ echo 'SQL'
 docker-compose run --rm --no-deps -e PGOPTIONS='--client-min-messages=warning' --entrypoint psql run -h db -U robot -d robotgame -q -1 -f /sql/daily.sql
 # Backup dbs
 echo 'Backup dbs'
+rm -rf ./dbbackups/*
 docker-compose run --rm --no-deps --entrypoint pg_dump run -h db -U robot -d robotgame --format=c -s -f /dbbackups/`date +\%Y-\%m-\%d`-robotgame-schema
 docker-compose run --rm --no-deps --entrypoint pg_dump run -h db -U robot -d robotgame --format=c -a -T history -f /dbbackups/`date +\%Y-\%m-\%d`-robotgame-data
 # Restore dbs
