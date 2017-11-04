@@ -255,6 +255,9 @@ def fancy_display_name(robot):
         res += '''\n<i class="fa fa-star trophy-contributor" rel="tooltip"
                     title="Current Robot Game supporter, thank you!"></i>'''
     if is_past_contributor(robot.user_id):
-        res += '''\n<i class="fa fa-star-o trophy-contributor" rel="tooltip"
-                    title="Past Robot Game supporter, much appreciated!"></i>'''
+        res += '''
+                <i class="fa fa-star-o trophy-contributor"
+                   rel="tooltip"
+                   title="Past Robot Game supporter, much appreciated!">
+                </i>'''
     return res
