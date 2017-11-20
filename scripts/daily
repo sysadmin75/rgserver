@@ -12,11 +12,10 @@ echo 'Backup dbs'
 rm -rf ./dbbackups/*
 docker-compose run --rm --no-deps --entrypoint pg_dump run -h db -U robot -d robotgame --format=c -s -f /dbbackups/`date +\%Y-\%m-\%d`-robotgame-schema
 docker-compose run --rm --no-deps --entrypoint pg_dump run -h db -U robot -d robotgame --format=c -a -T history -f /dbbackups/`date +\%Y-\%m-\%d`-robotgame-data
-# Restore dbs
-#docker-compose run --rm --no-deps --entrypoint pg_restore run -h db -U robot -d robotgame --format=c -a /dbbackups/restoredata
 # Compress matches
-# Note that -mtime +1 matches at least 2 days ago
-# Keep for 2 weeks so fewer 404s for Google
+# Note: -mtime +1 matches at least 2 days ago, keep 8 days to match history db
 echo 'Clean matchlog'
-docker-compose run --rm --no-deps --entrypoint find run /matchlog/ -not -path "/matchlog/" -not -path "*/.gitkeep" -mtime +13 -delete;
+docker-compose run --rm --no-deps --entrypoint find run /matchlog/ -not -path "/matchlog/" -not -path "*/.gitkeep" -mtime +7 -delete;
+echo 'Clean containers'
+docker-compose rm -f
 echo 'Done'
