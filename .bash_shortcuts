@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 alias doc=docker-compose
-alias docupd='doc up --remove-orphans -d'
+alias docupd='doc up -d'
 alias docstop='doc stop'
-alias docrmall='doc rm -v -f db matchmaker webapp server run'
+alias docrmall='doc rm -v -f'
 alias docrestart='docstop && docrmall && docupd'
-alias removedanglingvolumes='docker volume ls -f dangling=true | sed -n s/local\ *//p | xargs docker volume rm'
