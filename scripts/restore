@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+echo `date`
+# Go to project base.
+cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd
+export PATH="/usr/local/bin:$PATH"
+
+# Restore dbs
+docker-compose run --rm --no-deps --entrypoint pg_restore run -h db -U robot -d robotgame --format=c -a /dbbackups/restoredata
