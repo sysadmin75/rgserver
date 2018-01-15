@@ -26,15 +26,6 @@ $def with (content)
   </head>
   <body>
       <div id="container">
-        $if 'logged_in' in sess and sess.logged_in and (sess.user_id in [8681, 8691, 8695, 8761, 8762, 8987, 9080, 9212, 9418, 9870]):
-          <div class="notice">
-            Please respect the work of other programmers. Do not abuse the system. You can do better than copy/paste.
-          </div>
-        $if 'logged_in' in sess and sess.logged_in and sess.user_id:
-          <!--<div class="notice">
-            A temporary per-user pvChat has been added to the bottom of each user's <a href="/user/$sess.user_id">profile</a>.<br />
-            It will be removed when a better chat system is available.
-          </div>-->
         <!--<div class="notice">
           Robot Game will be down for a server move tomorrow, Monday June 16th starting approximately
           7:30AM (EST) for 4-6 hours.
@@ -61,10 +52,9 @@ $def with (content)
         </div>
         <div class="footer">
           <div class="left">
-            <span>&copy;&nbsp;2013-2017&nbsp;<a href="https://whitehalmos.org">Peter&nbsp;Wen</a></span>.
+            <span>&copy;&nbsp;2013-2018&nbsp;Peter&nbsp;Wen</span>
           </div>
           <div class="right">
-            <a href="https://plus.google.com/communities/118117754881924895861">Community</a> &middot;
             <a href="https://github.com/RobotGame/rgserver/issues">Bug&nbsp;Reports</a> &middot;
             <a href="/stats">Stats</a>
           </div>
