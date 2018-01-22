@@ -38,10 +38,7 @@ MAX_NAME_LENGTH = 25
 
 BOT_LIMIT_REACHED_MSG = '''
 Currently you can have at most {0} active robots. Disabling old bots will
-allow you to create new ones. Otherwise, please create a post in the Requests
-board of our community to increase your limit. It's
-very easy, please don't abuse the simple registration system and
-create multiple users.'''
+allow you to create new ones.'''
 
 urls = (
     # legacy redirects
