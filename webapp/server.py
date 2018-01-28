@@ -642,22 +642,6 @@ class PageViewRobot:
         next_matches = db.query(query, vars={'id': rid})
         latest_match = get_latest_match()
 
-        query = '''
-            select
-                matches.*,
-                r1.name as r1_name,
-                r2.name as r2_name
-            from matches
-                join robots r1 on r1.id = matches.r1_id
-                join robots r2 on r2.id = matches.r2_id
-            where (r1_id = $id or r2_id = $id)
-                  and (state = {0} or state = {1})
-            order by timestamp desc
-            LIMIT {2}
-            '''.format(ms.ERROR, ms.DONE, 5)
-        matches = db.query(
-            query, vars={'id': rid})
-
         challenges = 0
         if logged_in(sess):
             result = db.select('users',
@@ -667,7 +651,7 @@ class PageViewRobot:
             if result:
                 challenges = CHALLENGES_LIMITS - result[0]['challenges']
 
-        return ltpl('viewrobot', robot, matches, next_matches,
+        return ltpl('viewrobot', robot, next_matches,
                     latest_match.id if latest_match else None, challenges)
 
 

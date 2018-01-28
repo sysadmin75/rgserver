@@ -1,4 +1,4 @@
-$def with (robot, matches, next_matches, latest_id, challenges)
+$def with (robot, next_matches, latest_id, challenges)
 $var title: Viewing robot $robot.name
 <div class="clearfix">
     <div class="left">
@@ -106,64 +106,5 @@ $var title: Viewing robot $robot.name
       </div>
   </div>
   <h2><a href='/robot/$robot.id/history'>Match history</a></h2>
-  <div class="history">
-    $if matches:
-      <div class="matches fill">
-          $for match in matches:
-            <div class="match-item info $('normal' if match.winner == 0 else 'success' if match.winner == robot.id else 'fail')">
-                <a href="/match/$match.id" class="faded timestamp">
-                    $tplib.time_ago(match.timestamp)
-                </a>
-                <span class="rating faded">
-                    $if match.ranked:
-                        ($tplib.match_rating(match, robot.id))
-                </span>
-                <div class="result">
-                    <a class="inherit-color" href="/match/$match.id">
-                      $if match.winner == 0:
-                        <i class="fa fa-fw fa-ellipsis-h"></i>
-                      $elif match.winner == robot.id:
-                        <i class="fa fa-fw fa-check"></i>
-                      $elif match.winner is not None:
-                        <i class="fa fa-fw fa-times"></i>
-                      $else:
-                        <i class="fa fa-fw fa-exclaimation" rel="tooltip" title="Error."></i>
-                    </a>
-                </div>
-                <div class="score">
-                    <a class="inherit-color" href="/match/$match.id">
-                        $if match.r1_score is not None and match.r2_score is not None:
-                                $('{0} : {1}'.format(*((match.r1_score, match.r2_score) if match.r1_id == robot.id else (match.r2_score, match.r1_score))))
-                    </a>
-                </div >
-                <a class="faded" href="/robot/$robot.id/against/$(match.r2_id if match.r1_id == robot.id else match.r1_id)">
-                  vs.
-                </a>
-                <a class="name inherit-color" href="/robot/$(match.r2_id if match.r1_id == robot.id else match.r1_id)">
-                    $(match.r2_name if match.r1_id == robot.id else match.r1_name)
-                </a>
-                <span class="faded rating">
-                    $if match.ranked:
-                        ($tplib.match_rating(match, robot.id, other=True))
-                </span>
-                <span class="change">
-                    $if match.ranked:
-                        $ change = tplib.rating_change(match, robot.id)
-                        $if change > 0:
-                            (+$change)
-                        $elif change < 0:
-                            ($change)
-                        $else:
-                            (~)
-                </span>
-                <div>
-                    $if not match.ranked:
-                        <i class="defcursor faded fa fa-asterisk" rel="tooltip" title="Unranked."></i>
-                </div>
-            </div>
-      </div>
-    $else:
-      <p>No matches.</p>
-  </div>
   <h2><a href='/robot/$robot.id/charts'>Rating and ranking charts</a></h2>
 </div>
