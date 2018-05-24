@@ -2,6 +2,7 @@ Robot Game server code [![Build Status](https://travis-ci.org/RobotGame/rgserver
 ===================================
 
 **The official server is no longer available as of May 24th, 2018.**
+
 Feel free to make use of this code according to the
 [LICENSE](https://github.com/RobotGame/rgserver/blob/master/LICENSE).
 
@@ -17,10 +18,6 @@ and [Compose](https://docs.docker.com/compose/install/).
 
 The website is now live at [localhost:8000](http://localhost:8000). The
 matchmaker starts automatically.
-
-## Development
-
-> Coming soon!
 
 ## Upgrade
 
