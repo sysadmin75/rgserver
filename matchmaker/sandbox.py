@@ -88,7 +88,7 @@ def proxy_process_routine(user_code, queue_in, queue_out, queue_output):
 
         def make_user_robot(code, mod):
             try:
-                exec code in mod.__dict__
+                exec(code, mod.__dict__)
             except:
                 trace_func(file=out)
                 return None
