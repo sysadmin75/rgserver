@@ -117,7 +117,7 @@ sess = debuggable_session(app)
 
 
 def hash(data):
-    return hashlib.sha1(data).hexdigest()
+    return hashlib.sha1(data.encode('utf-8')).hexdigest()
 
 
 def generate_salt(length=10):

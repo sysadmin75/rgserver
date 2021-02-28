@@ -13,7 +13,9 @@ import dbcon
 import matchstate as ms
 import rungame
 import tools
+
 from rgkit.settings import settings
+
 
 
 def try_create_matches(db):
