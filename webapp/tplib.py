@@ -229,7 +229,7 @@ def safe_markdown(string):
     string = bleach.clean(string)
     string = markdown.markdown(string)
     others = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-    return bleach.clean(string, tags=bleach.ALLOWED_TAGS + others)
+    return bleach.clean(string, tags=bleach.ALLOWED_TAGS + frozenset(others))
 
 
 def fancy_display_name(robot):
