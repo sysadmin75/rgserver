@@ -5,7 +5,7 @@ params = {
     'dbn': 'postgres',
     'db': 'robotgame',
     'user': 'robot',
-    'pw': '',
+    'pw': 'robot',
 }
 
 connection = None

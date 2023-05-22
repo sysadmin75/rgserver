@@ -30,7 +30,7 @@ map_data = ast.literal_eval(
     open(pkg_resources.resource_filename('rgkit', 'maps/default.py')).read())
 settings.init_map(map_data)
 
-web.config.debug = False
+web.config.debug = True
 
 CHALLENGES_LIMITS = 25
 ROBOTS_LIMITS = 3
@@ -117,7 +117,7 @@ sess = debuggable_session(app)
 
 
 def hash(data):
-    return hashlib.sha1(data).hexdigest()
+    return hashlib.sha1(data.encode('utf-8')).hexdigest()
 
 
 def generate_salt(length=10):
